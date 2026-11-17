@@ -1,0 +1,52 @@
+# ===== Secrets et configuration locale (NE JAMAIS COMMITER) =====
+.env
+.env.*
+!.env.example
+application-local.properties
+application-local.yml
+application-secret*.properties
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+secrets/
+
+# ===== Maven =====
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+dependency-reduced-pom.xml
+
+# ===== IDE =====
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.classpath
+.project
+.settings/
+.factorypath
+.apt_generated
+.springBeans
+.sts4-cache
+nbproject/
+build/
+
+# ===== Système =====
+.DS_Store
+Thumbs.db
+*~
+*.swp
+
+# ===== Logs et fichiers temporaires =====
+*.log
+logs/
+tmp/
+*.tmp
+
+# ===== Données locales =====
+pgdata/
+uploads/
