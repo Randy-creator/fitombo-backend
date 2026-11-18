@@ -17,6 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 @SpringBootTest(
     properties = {
       "spring.docker.compose.enabled=false",
+      "app.cors.allowed-origins=",
       "app.security.jwt.secret=fitombo-integration-test-only-key-material"
     })
 @Transactional

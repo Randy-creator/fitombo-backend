@@ -167,6 +167,44 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>com.diffplug.spotless</groupId>
+				<artifactId>spotless-maven-plugin</artifactId>
+				<version>3.11.0</version>
+				<configuration>
+					<java>
+						<googleJavaFormat>
+							<version>2.0.0</version>
+							<cleanup>false</cleanup>
+							<formatJavadoc>false</formatJavadoc>
+							<reflowLongStrings>false</reflowLongStrings>
+						</googleJavaFormat>
+					</java>
+					<formats>
+						<format>
+							<includes>
+								<include>.github/workflows/*.yml</include>
+								<include>compose.yaml</include>
+								<include>.env.example</include>
+								<include>pom.xml</include>
+								<include>src/main/resources/**/*.properties</include>
+							</includes>
+							<trimTrailingWhitespace/>
+							<endWithNewline/>
+						</format>
+					</formats>
+				</configuration>
+				<executions>
+					<execution>
+						<id>check-formatting</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- Packaging exécutable Spring Boot (Lombok exclu du jar final) -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

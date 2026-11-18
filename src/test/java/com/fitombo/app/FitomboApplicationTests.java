@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Import;
 @SpringBootTest(
     properties = {
       "spring.docker.compose.enabled=false",
+      "app.cors.allowed-origins=",
       "app.security.jwt.secret=fitombo-integration-test-only-key-material"
     })
 class FitomboApplicationTests {
