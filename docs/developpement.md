@@ -75,9 +75,11 @@ Flyway vérifie aussi le checksum des fichiers dont seuls les commentaires ont c
 ## Sécurité et vérification
 
 - Les routes privées exigent un JWT d’accès Bearer. Les rôles globaux viennent du JWT. Vérifier l’appartenance à l’exploitation dans le service.
-- Pour les parcours d’authentification, prévoir BCrypt, codes SMS à usage unique, jetons d’accès courts, rotation et révocation des jetons de rafraîchissement, ainsi qu’une limitation de débit. Consulter le code pour vérifier les mécanismes déjà implémentés.
+- Le login par mot de passe exige un compte actif, un téléphone vérifié au format E.164 et un hash BCrypt. Renvoyer la même erreur pour les identifiants invalides et les comptes non admissibles. Protéger la réponse JWT contre la mise en cache.
+- Le login limite les tentatives par adresse côté application. En déploiement derrière un proxy, transmettre l’adresse cliente depuis un proxy de confiance. Mutualiser la limitation côté proxy ou via un stockage partagé si plusieurs instances du backend servent les requêtes.
+- Pour les futurs parcours d’authentification, prévoir les codes SMS à usage unique ainsi que la rotation et la révocation des jetons de rafraîchissement.
 - Tester les calculs et règles métier à l’unité, les migrations et repositories avec PostgreSQL, et les cas d’usage HTTP avec MockMvc ou RestAssured. Couvrir les conflits et doublons pour la synchronisation.
-- Faire des commits courts et cohérents avec l’historique, par exemple `feat(cheptel): add animal model` ou `fix(configuration): align local PostgreSQL port`.
+- À la fin de chaque fonctionnalité ou changement notable, lancer les vérifications pertinentes puis créer un commit dédié avec un message court. Suivre le format de l’historique, par exemple `feat(cheptel): add animal model` ou `fix(configuration): align local PostgreSQL port`.
 
 ## Lectures paginées
 

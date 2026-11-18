@@ -23,10 +23,41 @@ docker compose exec -T postgres sh -c \
   < src/test/resources/sql/exploitations-api.sql
 ```
 
-## Générer un jeton de test
+## Se connecter dans Postman
 
-Ce jeton de quinze minutes sert uniquement à la vérification locale, en attendant
-le parcours de connexion. Le script lit la clé du `.env` local sans l’afficher.
+Sur la base de démonstration, attribuer un mot de passe au membre déjà chargé et
+marquer son téléphone comme vérifié. Ces identifiants sont réservés au test local.
+
+```bash
+docker compose exec -T postgres sh -c \
+  'psql -U "$POSTGRES_USER" -d fitombo_api_test -v ON_ERROR_STOP=1 --single-transaction' <<'SQL'
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+UPDATE utilisateur
+SET telephone_verifie = true,
+    mot_de_passe_hash = crypt('Fitombo-Demo-2026!', gen_salt('bf', 10))
+WHERE id = '10000000-0000-4000-8000-000000000002';
+SQL
+```
+
+Dans Postman, créer une requête **POST** vers `{{baseUrl}}/auth/connexion`.
+Sélectionner **No Auth**, puis **Body → raw → JSON** et envoyer ce corps.
+
+```json
+{
+  "telephone": "+261340001002",
+  "motDePasse": "Fitombo-Demo-2026!"
+}
+```
+
+La réponse `200` fournit `accessToken`, `tokenType` et `expiresIn` (1 800 secondes
+par défaut). Copier `accessToken` dans **Authorization → Bearer Token** de la
+collection. Laisser les requêtes de lecture hériter de cette autorisation.
+Un mauvais mot de passe renvoie `401` et un téléphone mal formé renvoie `400`.
+Au-delà de dix tentatives par minute depuis une même adresse, le login renvoie `429`.
+
+## Générer un jeton de test depuis le terminal
+
+Ce jeton de quinze minutes sert aux tests isolés qui ne passent pas par le login. Le script lit la clé du `.env` local sans l’afficher.
 Il utilise par défaut l’utilisateur membre de la ferme de démonstration.
 
 ```bash
