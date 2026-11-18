@@ -5,11 +5,11 @@ import com.fitombo.app.exception.ExceptionApplicative;
 import java.util.UUID;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-final class UtilisateurConnecte {
+public final class UtilisateurConnecte {
 
   private UtilisateurConnecte() {}
 
-  static UUID id(Jwt jwt) {
+  public static UUID id(Jwt jwt) {
     if (jwt == null || jwt.getSubject() == null) {
       throw new ExceptionApplicative(CodeErreur.UTILISATEUR_NON_IDENTIFIE);
     }

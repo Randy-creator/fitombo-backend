@@ -42,4 +42,9 @@ public class Utilisateur extends EntiteUuid {
   private Role role;
 
   @Version private Long version;
+
+  public void modifierProfil(String nom, String langue) {
+    this.nom = nom.strip();
+    this.langue = langue;
+  }
 }

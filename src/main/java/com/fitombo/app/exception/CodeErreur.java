@@ -6,7 +6,8 @@ public enum CodeErreur {
   UTILISATEUR_NON_IDENTIFIE("Identifiant utilisateur absent ou invalide"),
   TRI_INVALIDE("Champ de tri non autorisé"),
   ESPECE_INTROUVABLE("Espèce introuvable"),
-  EXPLOITATION_INTROUVABLE("Exploitation introuvable");
+  EXPLOITATION_INTROUVABLE("Exploitation introuvable"),
+  PROFIL_INTROUVABLE("Profil introuvable");
 
   private final String message;
 

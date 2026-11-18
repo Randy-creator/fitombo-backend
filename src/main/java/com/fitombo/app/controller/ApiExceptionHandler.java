@@ -16,7 +16,8 @@ class ApiExceptionHandler {
           case IDENTIFIANTS_INVALIDES, UTILISATEUR_NON_IDENTIFIE -> HttpStatus.UNAUTHORIZED;
           case LIMITE_CONNEXION_ATTEINTE -> HttpStatus.TOO_MANY_REQUESTS;
           case TRI_INVALIDE -> HttpStatus.BAD_REQUEST;
-          case ESPECE_INTROUVABLE, EXPLOITATION_INTROUVABLE -> HttpStatus.NOT_FOUND;
+          case ESPECE_INTROUVABLE, EXPLOITATION_INTROUVABLE, PROFIL_INTROUVABLE ->
+              HttpStatus.NOT_FOUND;
         };
     var erreur = ProblemDetail.forStatusAndDetail(statut, exception.getMessage());
     erreur.setProperty("code", exception.code().name());
