@@ -18,6 +18,7 @@ class ApiExceptionHandler {
           case TRI_INVALIDE -> HttpStatus.BAD_REQUEST;
           case ESPECE_INTROUVABLE,
               EXPLOITATION_INTROUVABLE,
+              ALERTE_INTROUVABLE,
               ANIMAL_INTROUVABLE,
               PROFIL_INTROUVABLE ->
               HttpStatus.NOT_FOUND;

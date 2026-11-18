@@ -8,7 +8,8 @@ public enum CodeErreur {
   ESPECE_INTROUVABLE("Espèce introuvable"),
   EXPLOITATION_INTROUVABLE("Exploitation introuvable"),
   PROFIL_INTROUVABLE("Profil introuvable"),
-  ANIMAL_INTROUVABLE("Animal introuvable");
+  ANIMAL_INTROUVABLE("Animal introuvable"),
+  ALERTE_INTROUVABLE("Alerte introuvable");
 
   private final String message;
 

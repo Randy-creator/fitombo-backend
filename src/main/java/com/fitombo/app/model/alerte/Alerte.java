@@ -9,6 +9,8 @@ import com.fitombo.app.model.objectif.Objectif;
 import com.fitombo.app.model.utilisateur.Utilisateur;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -29,7 +31,8 @@ public class Alerte extends EntiteUuid {
   @Column(name = "date_echeance")
   private LocalDate dateEcheance;
 
-  private String statut;
+  @Enumerated(EnumType.STRING)
+  private StatutAlerte statut;
 
   private String message;
 
@@ -56,4 +59,10 @@ public class Alerte extends EntiteUuid {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "objectif_id")
   private Objectif objectif;
+
+  public void marquerVue() {
+    if (statut == StatutAlerte.EN_ATTENTE || statut == StatutAlerte.ENVOYEE) {
+      statut = StatutAlerte.VUE;
+    }
+  }
 }
