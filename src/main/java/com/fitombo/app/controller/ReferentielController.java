@@ -25,12 +25,14 @@ public class ReferentielController {
 
     @GetMapping
     public PageResult<EspeceDto> especes(@PageableDefault(size = 20, sort = "nomFr") Pageable pageable) {
-        return referentiel.listerEspeces(Pagination.stable(pageable, "code", Set.of("nomFr", "code")));
+        Pageable pagination = Pagination.stable(pageable, "code", Set.of("nomFr", "code"));
+        return referentiel.listerEspeces(pagination);
     }
 
     @GetMapping("/{code}/races")
     public PageResult<RaceDto> races(@PathVariable String code,
                                     @PageableDefault(size = 20, sort = "nom") Pageable pageable) {
-        return referentiel.listerRaces(code, Pagination.stable(pageable, "id", Set.of("nom", "id")));
+        Pageable pagination = Pagination.stable(pageable, "id", Set.of("nom", "id"));
+        return referentiel.listerRaces(code, pagination);
     }
 }

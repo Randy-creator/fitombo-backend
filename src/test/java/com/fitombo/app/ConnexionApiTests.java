@@ -103,7 +103,9 @@ class ConnexionApiTests extends ApiIntegrationTest {
         for (int tentative = 0; tentative < 10; tentative++) {
             connecter(TELEPHONE, MOT_DE_PASSE, "192.0.2.14").andExpect(status().isOk());
         }
-        connecter(TELEPHONE, MOT_DE_PASSE, "192.0.2.14").andExpect(status().isTooManyRequests());
+        connecter(TELEPHONE, MOT_DE_PASSE, "192.0.2.14")
+                .andExpect(status().isTooManyRequests())
+                .andExpect(jsonPath("$.code").value("LIMITE_CONNEXION_ATTEINTE"));
         connecter(TELEPHONE, MOT_DE_PASSE, "192.0.2.15").andExpect(status().isOk());
     }
 

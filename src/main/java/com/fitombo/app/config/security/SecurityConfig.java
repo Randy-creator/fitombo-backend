@@ -35,7 +35,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration(proxyBeanMethods = false)
 @EnableMethodSecurity
-@EnableConfigurationProperties(JwtProperties.class)
+@EnableConfigurationProperties({JwtProperties.class, LimiteConnexionProperties.class})
 class SecurityConfig {
 
     @Bean
@@ -43,12 +43,6 @@ class SecurityConfig {
             HttpSecurity http,
             @Value("${springdoc.swagger-ui.enabled:false}") boolean swaggerEnabled
     ) throws Exception {
-        var roles = new JwtGrantedAuthoritiesConverter();
-        roles.setAuthoritiesClaimName("role");
-        roles.setAuthorityPrefix("ROLE_");
-        var authentication = new JwtAuthenticationConverter();
-        authentication.setJwtGrantedAuthoritiesConverter(roles);
-
         return http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
@@ -66,8 +60,18 @@ class SecurityConfig {
                     access.requestMatchers("/actuator", "/actuator/**").hasRole("ADMIN");
                     access.anyRequest().authenticated();
                 })
-                .oauth2ResourceServer(resource -> resource.jwt(jwt -> jwt.jwtAuthenticationConverter(authentication)))
+                .oauth2ResourceServer(resource -> resource.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .build();
+    }
+
+    private JwtAuthenticationConverter jwtAuthenticationConverter() {
+        var roles = new JwtGrantedAuthoritiesConverter();
+        roles.setAuthoritiesClaimName("role");
+        roles.setAuthorityPrefix("ROLE_");
+
+        var authentication = new JwtAuthenticationConverter();
+        authentication.setJwtGrantedAuthoritiesConverter(roles);
+        return authentication;
     }
 
     @Bean

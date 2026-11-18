@@ -31,7 +31,8 @@ public class AnimalController {
     public PageResult<AnimalDto> lister(@AuthenticationPrincipal Jwt jwt, @PathVariable UUID exploitationId,
                                        @RequestParam(required = false) StatutAnimal statut,
                                        @PageableDefault(size = 20, sort = "identifiant") Pageable pageable) {
-        return animaux.lister(UtilisateurConnecte.id(jwt), exploitationId, statut,
-                Pagination.stable(pageable, "id", Set.of("id", "identifiant", "nom", "statut")));
+        UUID utilisateurId = UtilisateurConnecte.id(jwt);
+        Pageable pagination = Pagination.stable(pageable, "id", Set.of("id", "identifiant", "nom", "statut"));
+        return animaux.lister(utilisateurId, exploitationId, statut, pagination);
     }
 }

@@ -3,16 +3,16 @@ package com.fitombo.app.service;
 import com.fitombo.app.dto.EspeceDto;
 import com.fitombo.app.dto.PageResult;
 import com.fitombo.app.dto.RaceDto;
+import com.fitombo.app.exception.CodeErreur;
+import com.fitombo.app.exception.ExceptionApplicative;
 import com.fitombo.app.repository.EspeceRepository;
 import com.fitombo.app.repository.RaceRepository;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +28,7 @@ public class ReferentielService {
 
     public PageResult<RaceDto> listerRaces(String code, Pageable pageable) {
         if (!especes.existsByCodeAndActifTrue(code)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Espèce introuvable");
+            throw new ExceptionApplicative(CodeErreur.ESPECE_INTROUVABLE);
         }
         return PageResult.from(races.findActivesParEspece(code, pageable));
     }

@@ -2,9 +2,10 @@ package com.fitombo.app.controller;
 
 import java.util.UUID;
 
-import org.springframework.http.HttpStatus;
+import com.fitombo.app.exception.CodeErreur;
+import com.fitombo.app.exception.ExceptionApplicative;
+
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.server.ResponseStatusException;
 
 final class UtilisateurConnecte {
 
@@ -13,12 +14,12 @@ final class UtilisateurConnecte {
 
     static UUID id(Jwt jwt) {
         if (jwt == null || jwt.getSubject() == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Identifiant utilisateur absent");
+            throw new ExceptionApplicative(CodeErreur.UTILISATEUR_NON_IDENTIFIE);
         }
         try {
             return UUID.fromString(jwt.getSubject());
         } catch (IllegalArgumentException exception) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Identifiant utilisateur invalide");
+            throw new ExceptionApplicative(CodeErreur.UTILISATEUR_NON_IDENTIFIE);
         }
     }
 }

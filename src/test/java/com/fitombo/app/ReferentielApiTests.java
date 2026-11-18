@@ -17,8 +17,9 @@ class ReferentielApiTests extends ApiIntegrationTest {
             values ('ZZ_API_MASQUEE', 'Espèce désactivée', 'LOT', false);
             """)
     void listeLesEspecesActivesAvecPagination() throws Exception {
-        mvc.perform(get("/especes").param("size", "100").with(utilisateur(1)))
+        mvc.perform(get("/especes").param("size", "500").with(utilisateur(1)))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size").value(100))
                 .andExpect(jsonPath("$.items[*].code", hasItem("ZEBU")))
                 .andExpect(jsonPath("$.items[*].code", not(hasItem("ZZ_API_MASQUEE"))));
 
