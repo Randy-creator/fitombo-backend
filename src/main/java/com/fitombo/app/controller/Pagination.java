@@ -7,11 +7,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-final class Pagination {
+public final class Pagination {
 
   private Pagination() {}
 
-  static Pageable stable(Pageable page, String tieBreaker, Set<String> allowedFields) {
+  public static Pageable stable(Pageable page, String tieBreaker, Set<String> allowedFields) {
     Sort sort = page.getSort();
     if (sort.stream().anyMatch(order -> !allowedFields.contains(order.getProperty()))) {
       throw new ExceptionApplicative(CodeErreur.TRI_INVALIDE);
