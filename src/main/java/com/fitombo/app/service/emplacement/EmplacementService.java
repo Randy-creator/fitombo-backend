@@ -20,7 +20,7 @@ public class EmplacementService {
 
   public PageResult<EmplacementDto> lister(
       UUID utilisateurId, UUID exploitationId, Pageable pageable) {
-    exploitations.consulter(utilisateurId, exploitationId);
+    exploitations.verifierAcces(utilisateurId, exploitationId);
     return PageResult.from(emplacements.findVisibles(exploitationId, pageable));
   }
 }

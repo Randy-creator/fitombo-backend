@@ -21,7 +21,7 @@ public class LotService {
 
   public PageResult<LotDto> lister(
       UUID utilisateurId, UUID exploitationId, StatutLot statut, Pageable pageable) {
-    exploitations.consulter(utilisateurId, exploitationId);
+    exploitations.verifierAcces(utilisateurId, exploitationId);
     return PageResult.from(lots.findVisibles(exploitationId, statut, pageable));
   }
 }

@@ -23,7 +23,7 @@ public class AnimalService {
 
   public PageResult<AnimalDto> lister(
       UUID utilisateurId, UUID exploitationId, StatutAnimal statut, Pageable pageable) {
-    exploitations.consulter(utilisateurId, exploitationId);
+    exploitations.verifierAcces(utilisateurId, exploitationId);
     return PageResult.from(animaux.findParExploitation(exploitationId, statut, pageable));
   }
 
