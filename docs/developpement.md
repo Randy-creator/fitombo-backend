@@ -125,7 +125,10 @@ Flyway. Pour une vérification du formatage seul, utiliser `./mvnw spotless:chec
 `verify` contrôle le formatage, compile, lance les tests et construit le JAR.
 Les tests d’intégration provisionnent leur propre PostgreSQL via Testcontainers.
 Le workflow [CI](../.github/workflows/ci.yml) exécute la même commande à chaque
-push et pull request.
+push et pull request. Le contrôle est en lecture seule. En cas d’écart de
+formatage, Spotless indique les fichiers à corriger et le job s’arrête avant
+la compilation et les tests. Appliquer les corrections en local avec
+`./mvnw spotless:apply`, relire le diff, puis committer et pousser.
 
 ### Activer et suivre la CI sur GitHub
 
