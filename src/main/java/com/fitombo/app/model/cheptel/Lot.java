@@ -7,11 +7,14 @@ import com.fitombo.app.model.referentiel.Espece;
 import com.fitombo.app.model.referentiel.Race;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
+import java.time.Instant;
 import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -34,7 +37,8 @@ public class Lot extends EntiteUuid {
   @Column(name = "effectif_actuel")
   private Integer effectifActuel;
 
-  private String statut;
+  @Enumerated(EnumType.STRING)
+  private StatutLot statut;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "exploitation_id", nullable = false)
@@ -51,6 +55,9 @@ public class Lot extends EntiteUuid {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "emplacement_id")
   private Emplacement emplacement;
+
+  @Column(name = "deleted_at")
+  private Instant deletedAt;
 
   @Version private Long version;
 }
