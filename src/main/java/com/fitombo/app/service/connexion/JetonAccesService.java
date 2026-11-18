@@ -1,10 +1,10 @@
-package com.fitombo.app.service;
+package com.fitombo.app.service.connexion;
 
 import java.time.Instant;
 import java.util.UUID;
 
 import com.fitombo.app.config.security.JwtProperties;
-import com.fitombo.app.dto.ConnexionResponse;
+import com.fitombo.app.dto.connexion.ConnexionResponse;
 import com.fitombo.app.model.utilisateur.Role;
 
 import lombok.RequiredArgsConstructor;

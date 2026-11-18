@@ -1,4 +1,4 @@
-package com.fitombo.app.controller;
+package com.fitombo.app.controller.connexion;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;

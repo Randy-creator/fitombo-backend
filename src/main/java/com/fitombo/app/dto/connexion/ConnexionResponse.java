@@ -1,4 +1,4 @@
-package com.fitombo.app.dto;
+package com.fitombo.app.dto.connexion;
 
 public record ConnexionResponse(String accessToken, String tokenType, long expiresIn) {
     @Override

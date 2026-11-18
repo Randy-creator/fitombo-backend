@@ -1,13 +1,13 @@
-package com.fitombo.app.service;
+package com.fitombo.app.service.connexion;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-import com.fitombo.app.dto.ConnexionResponse;
+import com.fitombo.app.dto.connexion.ConnexionResponse;
 import com.fitombo.app.exception.CodeErreur;
 import com.fitombo.app.exception.ExceptionApplicative;
-import com.fitombo.app.repository.UtilisateurRepository;
-import com.fitombo.app.repository.UtilisateurRepository.Identifiants;
+import com.fitombo.app.repository.connexion.UtilisateurRepository;
+import com.fitombo.app.repository.connexion.UtilisateurRepository.Identifiants;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

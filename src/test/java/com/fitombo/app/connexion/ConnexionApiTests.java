@@ -1,6 +1,8 @@
-package com.fitombo.app;
+package com.fitombo.app.connexion;
 
 import java.util.UUID;
+
+import com.fitombo.app.ApiIntegrationTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

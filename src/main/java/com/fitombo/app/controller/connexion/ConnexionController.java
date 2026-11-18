@@ -1,8 +1,8 @@
-package com.fitombo.app.controller;
+package com.fitombo.app.controller.connexion;
 
-import com.fitombo.app.dto.ConnexionRequest;
-import com.fitombo.app.dto.ConnexionResponse;
-import com.fitombo.app.service.ConnexionService;
+import com.fitombo.app.dto.connexion.ConnexionRequest;
+import com.fitombo.app.dto.connexion.ConnexionResponse;
+import com.fitombo.app.service.connexion.ConnexionService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;

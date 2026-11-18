@@ -1,4 +1,4 @@
-package com.fitombo.app.dto;
+package com.fitombo.app.dto.connexion;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

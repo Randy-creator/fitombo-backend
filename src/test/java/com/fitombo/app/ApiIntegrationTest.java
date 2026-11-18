@@ -19,7 +19,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
         "app.security.jwt.secret=fitombo-integration-test-only-key-material"
     })
 @Transactional
-abstract class ApiIntegrationTest {
+public abstract class ApiIntegrationTest {
 
     @Autowired
     private WebApplicationContext context;

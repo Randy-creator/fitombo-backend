@@ -1,4 +1,4 @@
-package com.fitombo.app.repository;
+package com.fitombo.app.repository.connexion;
 
 import java.util.Optional;
 import java.util.UUID;

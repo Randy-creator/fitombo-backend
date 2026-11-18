@@ -1,10 +1,10 @@
-package com.fitombo.app.service;
+package com.fitombo.app.service.connexion;
 
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fitombo.app.config.security.LimiteConnexionProperties;
+import com.fitombo.app.config.security.connexion.LimiteConnexionProperties;
 import com.fitombo.app.exception.CodeErreur;
 import com.fitombo.app.exception.ExceptionApplicative;
 

@@ -1,4 +1,4 @@
-package com.fitombo.app.config.security;
+package com.fitombo.app.config.security.connexion;
 
 import java.time.Duration;
 
