@@ -106,3 +106,34 @@ Flyway vérifie aussi le checksum des fichiers dont seuls les commentaires ont c
 - Renvoyer `items`, `page`, `size`, `totalElements` et `totalPages`. La pagination commence à zéro. Limiter le tri aux champs exposés et départager les égalités par un identifiant.
 - Utiliser le `sub` du JWT comme UUID de l’utilisateur. Une exploitation est accessible à son propriétaire actif ou à un membre actif dont les dates sont valides. Pour une ressource hors périmètre, renvoyer `404`.
 - Lancer `./mvnw test` avec Docker pour les tests d’intégration PostgreSQL. Voir le [guide de tests manuels](tests-manuels.md) pour vérifier les API localement.
+
+## Formater et vérifier avant de pousser
+
+Utiliser le JDK 25 et démarrer Docker pour les tests PostgreSQL. Le wrapper Maven
+télécharge Spotless et Google Java Format au premier lancement.
+
+```bash
+./mvnw spotless:apply
+./mvnw --batch-mode --no-transfer-progress verify
+```
+
+Spotless applique le style Google au Java de production et de test. Sur les
+fichiers de configuration ciblés, il vérifie les espaces en fin de ligne et le
+saut de ligne final. Les migrations SQL sont exclues pour préserver les checksums
+Flyway. Pour une vérification du formatage seul, utiliser `./mvnw spotless:check`.
+
+`verify` contrôle le formatage, compile, lance les tests et construit le JAR.
+Les tests d’intégration provisionnent leur propre PostgreSQL via Testcontainers.
+Le workflow [CI](../.github/workflows/ci.yml) exécute la même commande à chaque
+push et pull request.
+
+### Activer et suivre la CI sur GitHub
+
+1. Pousser la branche qui contient le workflow, par exemple avec `git push -u origin dev`.
+2. Dans le dépôt GitHub, ouvrir **Actions → CI** et vérifier le résultat du job
+   **Maven verify**. Si les workflows sont désactivés, les autoriser dans
+   **Settings → Actions → General**. Aucun secret de déploiement ne doit être ajouté.
+3. Pour rendre le contrôle obligatoire avant fusion, après une première
+   exécution, ouvrir **Settings → Rules → Rulesets**, créer une règle pour la
+   branche cible, exiger une pull request et sélectionner le contrôle **Maven verify**
+   dans **Require status checks to pass**.
