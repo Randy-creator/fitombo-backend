@@ -1,5 +1,6 @@
 package com.fitombo.app.model.cheptel;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 import com.fitombo.app.model.commun.EntiteUuid;
@@ -28,6 +29,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "animal")
 public class Animal extends EntiteUuid {
+
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
 
     private String identifiant;
 
