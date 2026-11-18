@@ -18,6 +18,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "race")
 public class Race extends EntiteUuid {
 
+    private boolean actif;
+
     private String nom;
 
     private String origine;

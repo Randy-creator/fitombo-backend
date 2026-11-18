@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "espece")
 public class Espece {
 
+    private boolean actif;
+
     @Id
     private String code;
 
