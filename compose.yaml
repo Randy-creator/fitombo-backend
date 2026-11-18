@@ -3,12 +3,14 @@ services:
     image: postgres:16-alpine
     container_name: fitombo-postgres
     environment:
-      POSTGRES_DB: ${DB_NAME:?DB_NAME manquant dans .env}
-      POSTGRES_USER: ${DB_USERNAME:?DB_USERNAME manquant dans .env}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD manquant dans .env}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       TZ: UTC
     ports:
-      - "127.0.0.1:5432:5432"
+      # Exposé uniquement sur ta machine (pas sur le réseau local).
+      # Port hôte 5433 par défaut pour ne pas entrer en conflit avec un PostgreSQL local sur 5432.
+      - "127.0.0.1:${DB_PORT:-5433}:5432"
     volumes:
       - fitombo-pgdata:/var/lib/postgresql/data
     healthcheck:
