@@ -1,16 +1,13 @@
 package com.fitombo.app.model.utilisateur;
 
-import java.time.Instant;
-
 import com.fitombo.app.model.commun.EntiteUuid;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-
+import java.time.Instant;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,29 +18,28 @@ import lombok.NoArgsConstructor;
 @Table(name = "utilisateur")
 public class Utilisateur extends EntiteUuid {
 
-    private boolean actif;
+  private boolean actif;
 
-    @Column(name = "deleted_at")
-    private Instant deletedAt;
+  @Column(name = "deleted_at")
+  private Instant deletedAt;
 
-    private String nom;
+  private String nom;
 
-    private String telephone;
+  private String telephone;
 
-    @Column(name = "telephone_verifie")
-    private boolean telephoneVerifie;
+  @Column(name = "telephone_verifie")
+  private boolean telephoneVerifie;
 
-    @Getter(AccessLevel.NONE)
-    @Column(name = "mot_de_passe_hash")
-    private String motDePasseHash;
+  @Getter(AccessLevel.NONE)
+  @Column(name = "mot_de_passe_hash")
+  private String motDePasseHash;
 
-    private String email;
+  private String email;
 
-    private String langue;
+  private String langue;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+  @Enumerated(EnumType.STRING)
+  private Role role;
 
-    @Version
-    private Long version;
+  @Version private Long version;
 }

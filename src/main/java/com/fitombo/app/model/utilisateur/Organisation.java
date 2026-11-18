@@ -1,11 +1,9 @@
 package com.fitombo.app.model.utilisateur;
 
 import com.fitombo.app.model.commun.EntiteUuid;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,10 +14,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "organisation")
 public class Organisation extends EntiteUuid {
 
-    private String nom;
+  private String nom;
 
-    private String type;
+  private String type;
 
-    @Version
-    private Long version;
+  @Version private Long version;
 }

@@ -9,10 +9,10 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 @TestConfiguration(proxyBeanMethods = false)
 class TestcontainersConfiguration {
 
-    @Bean
-    @ServiceConnection
-    @ConditionalOnProperty(name = "fitombo.test.postgres.enabled", matchIfMissing = true)
-    PostgreSQLContainer postgres() {
-        return new PostgreSQLContainer("postgres:16-alpine");
-    }
+  @Bean
+  @ServiceConnection
+  @ConditionalOnProperty(name = "fitombo.test.postgres.enabled", matchIfMissing = true)
+  PostgreSQLContainer postgres() {
+    return new PostgreSQLContainer("postgres:16-alpine");
+  }
 }

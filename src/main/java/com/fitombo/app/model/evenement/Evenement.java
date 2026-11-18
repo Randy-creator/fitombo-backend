@@ -1,13 +1,10 @@
 package com.fitombo.app.model.evenement;
 
-import java.time.LocalDate;
-
 import com.fitombo.app.model.cheptel.Animal;
 import com.fitombo.app.model.cheptel.Lot;
 import com.fitombo.app.model.commun.EntiteUuid;
 import com.fitombo.app.model.exploitation.Exploitation;
 import com.fitombo.app.model.utilisateur.Utilisateur;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
@@ -18,7 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,31 +28,30 @@ import lombok.NoArgsConstructor;
 @DiscriminatorColumn(name = "type", length = 25)
 public abstract class Evenement extends EntiteUuid {
 
-    @Column(name = "date_evenement")
-    private LocalDate dateEvenement;
+  @Column(name = "date_evenement")
+  private LocalDate dateEvenement;
 
-    private String notes;
+  private String notes;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "exploitation_id", nullable = false)
-    private Exploitation exploitation;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "exploitation_id", nullable = false)
+  private Exploitation exploitation;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "animal_id")
-    private Animal animal;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "animal_id")
+  private Animal animal;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lot_id")
-    private Lot lot;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "lot_id")
+  private Lot lot;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "saisi_par", nullable = false)
-    private Utilisateur saisiPar;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "saisi_par", nullable = false)
+  private Utilisateur saisiPar;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "corrige_evenement_id")
-    private Evenement corrigeEvenement;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "corrige_evenement_id")
+  private Evenement corrigeEvenement;
 
-    @Version
-    private Long version;
+  @Version private Long version;
 }

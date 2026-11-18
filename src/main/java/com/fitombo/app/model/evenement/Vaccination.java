@@ -1,9 +1,6 @@
 package com.fitombo.app.model.evenement;
 
-import java.time.LocalDate;
-
 import com.fitombo.app.model.referentiel.EtapeProtocole;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -12,7 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
-
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,12 +22,12 @@ import lombok.NoArgsConstructor;
 @PrimaryKeyJoinColumn(name = "evenement_id")
 public class Vaccination extends Evenement {
 
-    private String vaccin;
+  private String vaccin;
 
-    @Column(name = "rappel_prevu")
-    private LocalDate rappelPrevu;
+  @Column(name = "rappel_prevu")
+  private LocalDate rappelPrevu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "etape_protocole_id")
-    private EtapeProtocole etapeProtocole;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "etape_protocole_id")
+  private EtapeProtocole etapeProtocole;
 }

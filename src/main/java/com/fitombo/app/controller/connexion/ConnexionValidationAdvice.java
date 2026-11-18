@@ -10,10 +10,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice(assignableTypes = ConnexionController.class)
 class ConnexionValidationAdvice {
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
-    ProblemDetail requeteInvalide() {
-        var erreur = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Requête de connexion invalide");
-        erreur.setProperty("code", "CONNEXION_INVALIDE");
-        return erreur;
-    }
+  @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
+  ProblemDetail requeteInvalide() {
+    var erreur =
+        ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Requête de connexion invalide");
+    erreur.setProperty("code", "CONNEXION_INVALIDE");
+    return erreur;
+  }
 }

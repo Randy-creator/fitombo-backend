@@ -1,7 +1,6 @@
 package com.fitombo.app.model.evenement;
 
 import com.fitombo.app.model.cheptel.Lot;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -10,7 +9,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,17 +21,17 @@ import lombok.NoArgsConstructor;
 @PrimaryKeyJoinColumn(name = "evenement_id")
 public class MiseBas extends Evenement {
 
-    @Column(name = "nes_vivants")
-    private Integer nesVivants;
+  @Column(name = "nes_vivants")
+  private Integer nesVivants;
 
-    @Column(name = "morts_nes")
-    private Integer mortsNes;
+  @Column(name = "morts_nes")
+  private Integer mortsNes;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "saillie_id")
-    private Saillie saillie;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "saillie_id")
+  private Saillie saillie;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lot_petits_id")
-    private Lot lotPetits;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "lot_petits_id")
+  private Lot lotPetits;
 }

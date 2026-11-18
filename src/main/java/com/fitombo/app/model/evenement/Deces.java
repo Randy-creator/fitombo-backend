@@ -4,7 +4,6 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
 @PrimaryKeyJoinColumn(name = "evenement_id")
 public class Deces extends Evenement {
 
-    private String cause;
+  private String cause;
 
-    private Integer nombre;
+  private Integer nombre;
 }

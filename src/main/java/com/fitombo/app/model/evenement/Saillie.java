@@ -1,9 +1,6 @@
 package com.fitombo.app.model.evenement;
 
-import java.time.LocalDate;
-
 import com.fitombo.app.model.cheptel.Animal;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -12,7 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
-
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,12 +22,12 @@ import lombok.NoArgsConstructor;
 @PrimaryKeyJoinColumn(name = "evenement_id")
 public class Saillie extends Evenement {
 
-    private String methode;
+  private String methode;
 
-    @Column(name = "mise_bas_prevue")
-    private LocalDate miseBasPrevue;
+  @Column(name = "mise_bas_prevue")
+  private LocalDate miseBasPrevue;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "male_id")
-    private Animal male;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "male_id")
+  private Animal male;
 }

@@ -1,14 +1,12 @@
 package com.fitombo.app.model.referentiel;
 
 import com.fitombo.app.model.commun.EntiteUuid;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,14 +17,14 @@ import lombok.NoArgsConstructor;
 @Table(name = "etape_protocole")
 public class EtapeProtocole extends EntiteUuid {
 
-    @Column(name = "age_jours")
-    private Integer ageJours;
+  @Column(name = "age_jours")
+  private Integer ageJours;
 
-    private String produit;
+  private String produit;
 
-    private String description;
+  private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "protocole_id", nullable = false)
-    private ProtocoleSanitaire protocole;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "protocole_id", nullable = false)
+  private ProtocoleSanitaire protocole;
 }

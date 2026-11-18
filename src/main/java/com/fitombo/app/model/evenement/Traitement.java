@@ -5,7 +5,6 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,8 +17,8 @@ import lombok.NoArgsConstructor;
 @PrimaryKeyJoinColumn(name = "evenement_id")
 public class Traitement extends Evenement {
 
-    private String produit;
+  private String produit;
 
-    @Column(name = "delai_attente_jours")
-    private Integer delaiAttenteJours;
+  @Column(name = "delai_attente_jours")
+  private Integer delaiAttenteJours;
 }
