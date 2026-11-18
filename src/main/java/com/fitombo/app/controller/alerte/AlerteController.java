@@ -1,7 +1,7 @@
 package com.fitombo.app.controller.alerte;
 
 import com.fitombo.app.controller.Pagination;
-import com.fitombo.app.controller.UtilisateurConnecte;
+import com.fitombo.app.controller.UtilisateurCourant;
 import com.fitombo.app.dto.PageResult;
 import com.fitombo.app.dto.alerte.AlerteDto;
 import com.fitombo.app.dto.alerte.MarquerAlerteRequest;
@@ -14,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,10 +31,9 @@ public class AlerteController {
 
   @GetMapping
   public PageResult<AlerteDto> lister(
-      @AuthenticationPrincipal Jwt jwt,
+      @UtilisateurCourant UUID utilisateurId,
       @RequestParam(required = false) StatutAlerte statut,
       @PageableDefault(size = 20, sort = "dateEcheance") Pageable pageable) {
-    UUID utilisateurId = UtilisateurConnecte.id(jwt);
     Pageable pagination = Pagination.stable(pageable, "id", Set.of("id", "dateEcheance", "statut"));
     return alertes.lister(utilisateurId, statut, pagination);
   }
@@ -44,9 +41,9 @@ public class AlerteController {
   @PatchMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void marquerVue(
-      @AuthenticationPrincipal Jwt jwt,
+      @UtilisateurCourant UUID utilisateurId,
       @PathVariable UUID id,
       @Valid @RequestBody MarquerAlerteRequest demande) {
-    alertes.marquerVue(UtilisateurConnecte.id(jwt), id);
+    alertes.marquerVue(utilisateurId, id);
   }
 }

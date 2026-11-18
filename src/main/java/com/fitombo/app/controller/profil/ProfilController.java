@@ -1,13 +1,12 @@
 package com.fitombo.app.controller.profil;
 
-import com.fitombo.app.controller.UtilisateurConnecte;
+import com.fitombo.app.controller.UtilisateurCourant;
 import com.fitombo.app.dto.profil.ModifierProfilRequest;
 import com.fitombo.app.dto.profil.ProfilDto;
 import com.fitombo.app.service.profil.ProfilService;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,13 +20,13 @@ public class ProfilController {
   private final ProfilService profils;
 
   @GetMapping
-  public ProfilDto consulter(@AuthenticationPrincipal Jwt jwt) {
-    return profils.consulter(UtilisateurConnecte.id(jwt));
+  public ProfilDto consulter(@UtilisateurCourant UUID utilisateurId) {
+    return profils.consulter(utilisateurId);
   }
 
   @PutMapping
   public ProfilDto modifier(
-      @AuthenticationPrincipal Jwt jwt, @Valid @RequestBody ModifierProfilRequest demande) {
-    return profils.modifier(UtilisateurConnecte.id(jwt), demande);
+      @UtilisateurCourant UUID utilisateurId, @Valid @RequestBody ModifierProfilRequest demande) {
+    return profils.modifier(utilisateurId, demande);
   }
 }
