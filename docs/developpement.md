@@ -43,6 +43,15 @@ et des codes métier stables. Les services expriment leurs erreurs sans statut H
 - Centraliser la conversion des exceptions applicatives en statuts et codes HTTP. Pour la validation du login, renvoyer une erreur générique sans reprendre les valeurs soumises ni le détail du parseur.
 - Garder les requêtes et projections dans les repositories. Définir le périmètre et les transactions dans les services. Tester le parcours par son point d’entrée normal.
 
+## Réutilisation et optimisation
+
+- Avant d’ajouter du code, chercher une opération, une validation ou une requête équivalente dans sa couche. Réutiliser le même contrat lorsque les entrées, les autorisations et les erreurs suivent la même règle.
+- Centraliser les règles qui doivent évoluer ensemble. Une ressemblance de structure entre deux cas d’usage ne suffit pas à justifier une abstraction. Garder les routes, DTO et tris propres à chaque domaine.
+- Déclarer `@UtilisateurCourant UUID utilisateurId` dans les contrôleurs qui ont besoin du compte connecté. Le résolveur MVC lit le `sub` du JWT. Les services utilisent l’UUID et appliquent les autorisations métier.
+- Réutiliser `ExploitationService.verifierAcces` pour les parcours qui vérifient seulement le périmètre d’une exploitation. Utiliser la projection de détail quand la réponse a besoin des données de l’exploitation.
+- Projeter uniquement les champs nécessaires, paginer en base et réutiliser les projections identiques. Vérifier les requêtes et les volumes réels avant d’introduire un cache ou un index.
+- Réutiliser les propriétés communes et les fixtures d’intégration. Les tests de bout en bout doivent couvrir le comportement partagé, notamment les cas hors périmètre.
+
 ## Règles métier
 
 - **RG-01** — Un animal dépend d’une seule exploitation à la fois. Un transfert crée un événement.
