@@ -22,8 +22,16 @@ Sous `com.fitombo.app`, organiser le code d’abord par couche, puis par domaine
 Suivre le flux `controller → service → repository`. Séparer les DTO des entités JPA.
 Utiliser l’injection par constructeur, des noms explicites et des commentaires courts
 pour expliquer les décisions qui ne se lisent pas dans le code.
-Centraliser les erreurs HTTP avec `@ControllerAdvice`, des réponses Problem Details
-et des codes métier stables. Actualiser OpenAPI quand le contrat HTTP évolue.
+Centraliser les erreurs HTTP avec `@RestControllerAdvice`, des réponses Problem Details
+et des codes métier stables. Les services expriment leurs erreurs sans statut HTTP. Actualiser OpenAPI quand le contrat HTTP évolue.
+
+## Lisibilité et configuration
+
+- Garder les contrôleurs centrés sur les entrées HTTP, l’appel au service et la réponse.
+- Donner une responsabilité claire à chaque méthode. Nommer les étapes intermédiaires quand cela rend le cas d’usage plus lisible. Extraire les blocs qui ont une responsabilité propre, comme émettre un JWT, vérifier un compte ou limiter les tentatives.
+- Placer les réglages modifiables dans les propriétés Spring. Utiliser `@ConfigurationProperties` pour les groupes de paramètres et valider leurs valeurs au démarrage. Garder en Java les constantes qui décrivent un invariant technique.
+- Centraliser la conversion des exceptions applicatives en statuts et codes HTTP. Pour la validation du login, renvoyer une erreur générique sans reprendre les valeurs soumises ni le détail du parseur.
+- Garder les requêtes et projections dans les repositories. Définir le périmètre et les transactions dans les services. Tester le parcours par son point d’entrée normal.
 
 ## Règles métier
 
@@ -76,7 +84,7 @@ Flyway vérifie aussi le checksum des fichiers dont seuls les commentaires ont c
 
 - Les routes privées exigent un JWT d’accès Bearer. Les rôles globaux viennent du JWT. Vérifier l’appartenance à l’exploitation dans le service.
 - Le login par mot de passe exige un compte actif, un téléphone vérifié au format E.164 et un hash BCrypt. Renvoyer la même erreur pour les identifiants invalides et les comptes non admissibles. Protéger la réponse JWT contre la mise en cache.
-- Le login limite les tentatives par adresse côté application. En déploiement derrière un proxy, transmettre l’adresse cliente depuis un proxy de confiance. Mutualiser la limitation côté proxy ou via un stockage partagé si plusieurs instances du backend servent les requêtes.
+- Le login limite les tentatives par adresse côté application. Les réglages `app.security.login.*` définissent le nombre de tentatives, la capacité et la durée de la fenêtre. En déploiement derrière un proxy, transmettre l’adresse cliente depuis un proxy de confiance. Mutualiser la limitation côté proxy ou via un stockage partagé si plusieurs instances du backend servent les requêtes.
 - Pour les futurs parcours d’authentification, prévoir les codes SMS à usage unique ainsi que la rotation et la révocation des jetons de rafraîchissement.
 - Tester les calculs et règles métier à l’unité, les migrations et repositories avec PostgreSQL, et les cas d’usage HTTP avec MockMvc ou RestAssured. Couvrir les conflits et doublons pour la synchronisation.
 - À la fin de chaque fonctionnalité ou changement notable, lancer les vérifications pertinentes puis créer un commit dédié avec un message court. Suivre le format de l’historique, par exemple `feat(cheptel): add animal model` ou `fix(configuration): align local PostgreSQL port`.
