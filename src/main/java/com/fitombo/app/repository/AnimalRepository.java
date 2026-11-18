@@ -3,6 +3,7 @@ package com.fitombo.app.repository;
 import com.fitombo.app.dto.AnimalDto;
 import com.fitombo.app.model.cheptel.Animal;
 import com.fitombo.app.model.cheptel.StatutAnimal;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,4 +25,15 @@ public interface AnimalRepository extends JpaRepository<Animal, UUID> {
       @Param("exploitationId") UUID exploitationId,
       @Param("statut") StatutAnimal statut,
       Pageable pageable);
+
+  @Query(
+      """
+      select new com.fitombo.app.dto.AnimalDto(a.id, a.identifiant, a.nom, a.espece.code,
+                                             r.nom, a.sexe, a.dateNaissance, a.statut)
+      from Animal a join a.exploitation e left join a.race r
+      where a.id = :id and a.deletedAt is null and
+      """
+          + ExploitationRepository.PERIMETRE)
+  Optional<AnimalDto> findVisibleParId(
+      @Param("id") UUID id, @Param("utilisateurId") UUID utilisateurId);
 }

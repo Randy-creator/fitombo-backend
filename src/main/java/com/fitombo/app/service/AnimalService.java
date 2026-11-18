@@ -2,6 +2,8 @@ package com.fitombo.app.service;
 
 import com.fitombo.app.dto.AnimalDto;
 import com.fitombo.app.dto.PageResult;
+import com.fitombo.app.exception.CodeErreur;
+import com.fitombo.app.exception.ExceptionApplicative;
 import com.fitombo.app.model.cheptel.StatutAnimal;
 import com.fitombo.app.repository.AnimalRepository;
 import java.util.UUID;
@@ -23,5 +25,11 @@ public class AnimalService {
       UUID utilisateurId, UUID exploitationId, StatutAnimal statut, Pageable pageable) {
     exploitations.consulter(utilisateurId, exploitationId);
     return PageResult.from(animaux.findParExploitation(exploitationId, statut, pageable));
+  }
+
+  public AnimalDto consulter(UUID utilisateurId, UUID id) {
+    return animaux
+        .findVisibleParId(id, utilisateurId)
+        .orElseThrow(() -> new ExceptionApplicative(CodeErreur.ANIMAL_INTROUVABLE));
   }
 }

@@ -7,7 +7,8 @@ public enum CodeErreur {
   TRI_INVALIDE("Champ de tri non autorisé"),
   ESPECE_INTROUVABLE("Espèce introuvable"),
   EXPLOITATION_INTROUVABLE("Exploitation introuvable"),
-  PROFIL_INTROUVABLE("Profil introuvable");
+  PROFIL_INTROUVABLE("Profil introuvable"),
+  ANIMAL_INTROUVABLE("Animal introuvable");
 
   private final String message;
 
