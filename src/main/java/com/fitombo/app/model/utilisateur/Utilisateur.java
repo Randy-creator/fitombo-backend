@@ -1,7 +1,10 @@
 package com.fitombo.app.model.utilisateur;
 
+import java.time.Instant;
+
 import com.fitombo.app.model.commun.EntiteUuid;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -17,6 +20,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "utilisateur")
 public class Utilisateur extends EntiteUuid {
+
+    private boolean actif;
+
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
 
     private String nom;
 

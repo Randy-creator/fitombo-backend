@@ -1,5 +1,6 @@
 package com.fitombo.app.model.utilisateur;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 import com.fitombo.app.model.commun.EntiteUuid;
@@ -22,6 +23,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "eleveur")
 public class Eleveur extends EntiteUuid {
+
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
 
     private String commune;
 
