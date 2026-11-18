@@ -3,6 +3,7 @@ package com.fitombo.app.config.security;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -22,8 +23,10 @@ import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtClaimValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
@@ -68,13 +71,22 @@ class SecurityConfig {
     }
 
     @Bean
-    JwtDecoder jwtDecoder(JwtProperties properties) {
+    SecretKey jwtSigningKey(JwtProperties properties) {
         byte[] secret = properties.secret().getBytes(StandardCharsets.UTF_8);
         if (secret.length < 32 || properties.secret().startsWith("CHANGE_MOI")) {
             throw new IllegalArgumentException("JWT_SECRET requires at least 32 bytes of random key material");
         }
 
-        var key = new SecretKeySpec(secret, "HmacSHA256");
+        return new SecretKeySpec(secret, "HmacSHA256");
+    }
+
+    @Bean
+    JwtEncoder jwtEncoder(SecretKey key) {
+        return NimbusJwtEncoder.withSecretKey(key).algorithm(MacAlgorithm.HS256).build();
+    }
+
+    @Bean
+    JwtDecoder jwtDecoder(SecretKey key, JwtProperties properties) {
         var decoder = NimbusJwtDecoder.withSecretKey(key).macAlgorithm(MacAlgorithm.HS256).build();
         decoder.setJwtValidator(new DelegatingOAuth2TokenValidator<>(
                 JwtValidators.createDefaultWithIssuer(properties.issuer()),

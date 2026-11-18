@@ -30,6 +30,13 @@ public class Utilisateur extends EntiteUuid {
 
     private String telephone;
 
+    @Column(name = "telephone_verifie")
+    private boolean telephoneVerifie;
+
+    @Getter(AccessLevel.NONE)
+    @Column(name = "mot_de_passe_hash")
+    private String motDePasseHash;
+
     private String email;
 
     private String langue;
