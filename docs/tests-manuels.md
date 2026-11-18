@@ -109,3 +109,41 @@ renvoie `404` pour ce membre dont l’accès a expiré. L’appel sans jeton ren
 
 Les mêmes routes sont disponibles dans Swagger UI en développement et peuvent être
 appelées depuis Postman en sélectionnant **Bearer Token**.
+
+## Tester le profil, les emplacements, les lots et les alertes
+
+Après la connexion du membre de démonstration, utilise le même `accessToken`
+et l’identifiant de **Ferme API** `30000000-0000-4000-8000-000000000001`.
+
+| Méthode et route | Données et résultat attendu |
+| --- | --- |
+| `GET /me` | `200` et le profil du membre connecté. |
+| `PUT /me` | Avec `{"nom":"Membre API","langue":"fr"}`, `200` et le profil mis à jour. Les langues acceptées sont `fr` et `mg`. |
+| `GET /exploitations/{id}/emplacements` | `200` et une liste paginée. |
+| `GET /animaux/{id}` | Utiliser un `id` obtenu dans la liste des animaux de la ferme. La fiche renvoie `200`, y compris pour un animal vendu. |
+| `GET /exploitations/{id}/lots?statut=ACTIF` | `200` et les lots actifs de la ferme. Le filtre est facultatif. |
+| `GET /alertes?statut=EN_ATTENTE` | `200` et les alertes en attente du membre qui sont dans son périmètre. |
+| `PATCH /alertes/{id}` | Avec `{"statut":"VUE"}`, `204`. La répétition de la requête renvoie aussi `204`. |
+
+Tu peux ajouter ces exemples dans **la base de test** depuis l’éditeur SQL de
+DBeaver, après avoir chargé le jeu de données de démonstration.
+
+```sql
+INSERT INTO emplacement (exploitation_id, nom, type, capacite)
+VALUES ('30000000-0000-4000-8000-000000000001', 'Enclos de démonstration', 'ENCLOS', 20)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO lot (exploitation_id, espece_code, code, effectif_initial, effectif_actuel)
+VALUES ('30000000-0000-4000-8000-000000000001', 'PORC', 'LOT-DEMO', 20, 18)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO alerte (utilisateur_id, exploitation_id, type, date_echeance, message, cle_deduplication)
+VALUES ('10000000-0000-4000-8000-000000000002', '30000000-0000-4000-8000-000000000001',
+        'AUTRE', current_date, 'Alerte de démonstration', 'alerte-demo-postman')
+ON CONFLICT DO NOTHING;
+```
+
+Récupère l’identifiant de l’alerte dans la réponse de `GET /alertes` avant de
+faire le `PATCH`. Ensuite, filtre avec `statut=VUE` pour vérifier le changement.
+Teste aussi les emplacements et les lots avec l’identifiant de la ferme privée
+`30000000-0000-4000-8000-000000000002`. Le membre de démonstration doit recevoir `404`.

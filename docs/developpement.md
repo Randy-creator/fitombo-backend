@@ -105,6 +105,8 @@ Flyway vérifie aussi le checksum des fichiers dont seuls les commentaires ont c
 - Appliquer le périmètre utilisateur et les filtres en base. Exclure les lignes supprimées logiquement des lectures courantes.
 - Renvoyer `items`, `page`, `size`, `totalElements` et `totalPages`. La pagination commence à zéro. Limiter le tri aux champs exposés et départager les égalités par un identifiant.
 - Utiliser le `sub` du JWT comme UUID de l’utilisateur. Une exploitation est accessible à son propriétaire actif ou à un membre actif dont les dates sont valides. Pour une ressource hors périmètre, renvoyer `404`.
+- Réutiliser le périmètre d’exploitation pour les consultations par identifiant et pour les alertes rattachées à une exploitation. Restreindre aussi chaque alerte à son destinataire.
+- Pour une transition répétable comme marquer une alerte vue, préserver les états terminaux et protéger la lecture suivie d’une mise à jour dans la même transaction.
 - Lancer `./mvnw test` avec Docker pour les tests d’intégration PostgreSQL. Voir le [guide de tests manuels](tests-manuels.md) pour vérifier les API localement.
 
 ## Formater et vérifier avant de pousser
