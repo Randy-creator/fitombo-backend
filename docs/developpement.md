@@ -1,6 +1,6 @@
 # Développer sur Fitombo
 
-Commencer par le [cahier des charges](Cahier%20des%20charges%20%E2%80%94%20Fitombo.pdf)
+Lire ce guide avant toute modification de code. Consulter ensuite le [cahier des charges](Cahier%20des%20charges%20%E2%80%94%20Fitombo.pdf)
 pour les règles métier et l'[UML](elevage-uml.mermaid) pour les relations.
 Pour le mapping JPA, vérifier aussi les migrations dans
 [`src/main/resources/db/migration`](../src/main/resources/db/migration).
@@ -8,7 +8,17 @@ Si ces sources divergent, signaler l’écart avant de changer le comportement.
 
 ## Structure Java
 
-Sous `com.fitombo.app`, organiser le code d’abord par couche, puis par domaine si nécessaire.
+Sous `com.fitombo.app`, organiser le code d’abord par couche, puis par fonctionnalité ou domaine.
+Réutiliser le même nom de sous-package dans les couches concernées. Par exemple,
+le login regroupe ses classes dans `controller.connexion`, `dto.connexion`,
+`service.connexion`, `repository.connexion` et `config.security.connexion`.
+Regrouper aussi les tests dédiés sous `src/test/java/com/fitombo/app/connexion`.
+
+Placer chaque classe dans le sous-package qui correspond à sa responsabilité.
+Les composants partagés restent dans leur package commun, comme la chaîne
+Spring Security dans `config.security`, la gestion globale des erreurs dans
+`controller` et l’entité `Utilisateur` dans `model.utilisateur`.
+Garder une visibilité de package pour les classes et méthodes internes au sous-package.
 
 | Package | Responsabilité |
 | --- | --- |
