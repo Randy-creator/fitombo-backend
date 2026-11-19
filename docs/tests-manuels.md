@@ -260,3 +260,48 @@ rotation. L’ancien et son successeur doivent alors être refusés.
 Pour l’envoi réel, vérifie une adresse expéditrice dans Brevo, crée une clé
 d’API et configure `EMAIL_MODE=brevo`, `EMAIL_FROM` et `BREVO_API_KEY` dans
 l’environnement. Render Free peut utiliser ce transport HTTPS.
+
+## Enregistrer les soins, l’alimentation et la production
+
+Dans Postman, envoie `POST {{baseUrl}}/evenements` avec le jeton du propriétaire
+de l’exploitation. Utilise `Content-Type: application/json` et le corps suivant
+en remplaçant les identifiants par ceux de tes données locales.
+
+```json
+{
+  "type": "ALIMENTATION",
+  "exploitationId": "{{exploitationId}}",
+  "animalId": "{{animalId}}",
+  "dateEvenement": "2026-06-01",
+  "aliment": "Foin",
+  "quantiteKg": 12.5,
+  "coutAriary": 15000
+}
+```
+
+Pour un lot, remplace `animalId` par `lotId`. Utilise une date passée ou la
+date du jour. Pour les autres types, remplace les champs propres à
+l’alimentation par ceux de la ligne correspondante.
+
+| Type | Champs d’exemple |
+| --- | --- |
+| `VACCINATION` | `"vaccin":"Vaccin enregistré","lotVaccin":"DOSE-A","rappelPrevu":"2026-12-01"` |
+| `TRAITEMENT` | `"produit":"Produit enregistré","dose":"4 ml","dureeJours":3,"delaiAttenteJours":7` |
+| `PRODUCTION` | `"typeProduction":"LAIT","quantite":7.5,"unite":"LITRE"` |
+
+Vérifie le statut `201 Created` et copie l’identifiant `id` retourné.
+Consulte ensuite `GET {{baseUrl}}/evenements?animalId={{animalId}}` pour
+retrouver la saisie dans le journal. Pour un lot, utilise le paramètre `lotId`.
+
+Pour annuler la saisie, envoie
+`PATCH {{baseUrl}}/evenements/{{evenementId}}/annulation` avec
+`{"motif":"Saisie en double"}`. Vérifie le statut `204 No Content` puis
+recharge le journal. La saisie y apparaît avec le statut `ANNULE`.
+
+Pour corriger la saisie, utilise un événement encore valide. Envoie
+`PUT {{baseUrl}}/evenements/{{evenementId}}` avec un objet JSON contenant
+`motif` et `saisie`. Dans `saisie`, reprends le corps du `POST` avec le
+même type, la même exploitation et la même cible, puis modifie les valeurs
+à corriger. Le statut `201 Created` renvoie l’identifiant de la nouvelle
+saisie. Dans le journal, l’original passe à `ANNULE` et la nouvelle ligne
+référence l’original dans `corrigeEvenementId`.
