@@ -78,7 +78,17 @@ public abstract class Evenement extends EntiteUuid {
   private TypeEvenement typeEvenement;
 
   @Column(insertable = false)
-  private String statut;
+  private String statut = "VALIDE";
+
+  @Column(name = "motif_annulation")
+  private String motifAnnulation;
+
+  public void annuler(String motif) {
+    if ("VALIDE".equals(statut)) {
+      statut = "ANNULE";
+      motifAnnulation = motif;
+    }
+  }
 
   @Column(name = "deleted_at")
   private Instant deletedAt;

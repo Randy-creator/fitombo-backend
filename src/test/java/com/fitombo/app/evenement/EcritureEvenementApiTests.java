@@ -1,6 +1,7 @@
 package com.fitombo.app.evenement;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -131,5 +132,42 @@ class EcritureEvenementApiTests extends ApiIntegrationTest {
             "produit":"Soin enregistré","delaiAttenteJours":-1
             """)
         .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void annuleUnEvenementEtConserveLePremierMotif() throws Exception {
+    enregistrer(
+            1,
+            "ALIMENTATION",
+            """
+            "aliment":"Saisie à annuler","quantiteKg":5
+            """)
+        .andExpect(status().isCreated());
+    UUID id =
+        jdbc.queryForObject(
+            "select evenement_id from alimentation where aliment = ?",
+            UUID.class,
+            "Saisie à annuler");
+
+    annuler(2, id, "Saisie en double").andExpect(status().isNotFound());
+    annuler(1, id, " ").andExpect(status().isBadRequest());
+    annuler(1, id, "Saisie en double").andExpect(status().isNoContent());
+    annuler(1, id, "Autre motif").andExpect(status().isNoContent());
+
+    assertThat(jdbc.queryForMap("select statut, motif_annulation from evenement where id = ?", id))
+        .containsEntry("statut", "ANNULE")
+        .containsEntry("motif_annulation", "Saisie en double");
+  }
+
+  private ResultActions annuler(int auteur, UUID id, String motif) throws Exception {
+    return mvc.perform(
+        patch("/evenements/{id}/annulation", id)
+            .with(utilisateur(auteur))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(
+                """
+                {"motif":"%s"}
+                """
+                    .formatted(motif)));
   }
 }

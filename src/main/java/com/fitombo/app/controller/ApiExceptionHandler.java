@@ -41,6 +41,7 @@ class ApiExceptionHandler {
           case ESPECE_INTROUVABLE,
               EXPLOITATION_INTROUVABLE,
               ALERTE_INTROUVABLE,
+              EVENEMENT_INTROUVABLE,
               ANIMAL_INTROUVABLE,
               PROFIL_INTROUVABLE ->
               HttpStatus.NOT_FOUND;

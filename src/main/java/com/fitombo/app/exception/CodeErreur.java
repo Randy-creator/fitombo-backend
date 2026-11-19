@@ -26,6 +26,7 @@ public enum CodeErreur {
   ANIMAL_NON_ACTIF("L’animal doit être actif"),
   ANIMAL_DEJA_RATTACHE("Cet animal est déjà rattaché à un autre lot"),
   ESPECE_LOT_INCOMPATIBLE("L’animal et le lot doivent être de la même espèce"),
+  EVENEMENT_INTROUVABLE("Événement introuvable"),
   PESEE_INVALIDE("Mesures ou cible de la pesée invalides"),
   CODE_EMAIL_INVALIDE("Code e-mail invalide ou expiré"),
   EMAIL_INDISPONIBLE("Envoi e-mail indisponible"),
