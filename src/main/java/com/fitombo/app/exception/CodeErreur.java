@@ -9,7 +9,9 @@ public enum CodeErreur {
   EXPLOITATION_INTROUVABLE("Exploitation introuvable"),
   PROFIL_INTROUVABLE("Profil introuvable"),
   ANIMAL_INTROUVABLE("Animal introuvable"),
-  ALERTE_INTROUVABLE("Alerte introuvable");
+  ALERTE_INTROUVABLE("Alerte introuvable"),
+  ELEVEUR_INTROUVABLE("Profil éleveur introuvable"),
+  EXPLOITATION_NOM_UTILISE("Ce nom d’exploitation est déjà utilisé");
 
   private final String message;
 
