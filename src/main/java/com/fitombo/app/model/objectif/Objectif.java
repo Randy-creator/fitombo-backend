@@ -53,5 +53,54 @@ public class Objectif extends EntiteUuid {
   @JoinColumn(name = "courbe_reference_id")
   private CourbeReference courbeReference;
 
+  @Column(name = "valeur_initiale")
+  private BigDecimal valeurInitiale;
+
+  @Column(name = "date_debut")
+  private LocalDate dateDebut;
+
+  @Enumerated(EnumType.STRING)
+  private UniteObjectif unite;
+
+  private String notes;
+
+  @Column(name = "deleted_at")
+  private java.time.Instant deletedAt;
+
   @Version private Long version;
+
+  public void modifier(BigDecimal valeur, LocalDate date, String notes) {
+    valeurCible = valeur;
+    dateCible = date;
+    this.notes = notes;
+  }
+
+  public void abandonner() {
+    statut = "ABANDONNE";
+    deletedAt = java.time.Instant.now();
+  }
+
+  public Objectif(
+      Exploitation exploitation,
+      Animal animal,
+      Lot lot,
+      TypeObjectif type,
+      BigDecimal valeurInitiale,
+      BigDecimal valeurCible,
+      UniteObjectif unite,
+      LocalDate dateDebut,
+      LocalDate dateCible,
+      String notes) {
+    this.exploitation = exploitation;
+    this.animal = animal;
+    this.lot = lot;
+    this.type = type;
+    this.valeurInitiale = valeurInitiale;
+    this.valeurCible = valeurCible;
+    this.unite = unite;
+    this.dateDebut = dateDebut;
+    this.dateCible = dateCible;
+    this.notes = notes;
+    this.statut = "EN_COURS";
+  }
 }

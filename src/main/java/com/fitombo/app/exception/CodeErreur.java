@@ -34,6 +34,8 @@ public enum CodeErreur {
   REVISION_AVEC_EFFETS("Cet événement a modifié le cheptel et nécessite une révision dédiée"),
   REPRODUCTION_INVALIDE("Cible, ascendance ou données de reproduction incompatibles"),
   MOUVEMENT_INVALIDE("Les données sont incompatibles avec ce mouvement"),
+  OBJECTIF_INVALIDE("L’unité, la cible, la valeur ou les dates de cet objectif sont incompatibles"),
+  OBJECTIF_INTROUVABLE("Objectif introuvable"),
   EVENEMENT_INTROUVABLE("Événement introuvable"),
   PESEE_INVALIDE("Mesures ou cible de la pesée invalides"),
   CODE_EMAIL_INVALIDE("Code e-mail invalide ou expiré"),
