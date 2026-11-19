@@ -170,3 +170,51 @@ effectif actuel égal à son effectif initial.
 Pour vérifier les refus, renvoie la même création avec le même propriétaire
 (`409`), essaie un effectif nul (`400`) ou crée un emplacement dans la ferme
 avec le jeton du membre lecteur (`404`).
+
+## Enregistrer, rechercher et peser le cheptel
+
+Utilise le jeton du propriétaire pour les écritures. Les membres actifs peuvent
+consulter le cheptel et l’historique de leur exploitation.
+
+1. Envoie `POST /exploitations/{id}/animaux` avec le corps ci-dessous. La réponse
+   `201` et l’en-tête `Location` donnent l’identifiant de l’animal.
+2. Vérifie avec `GET /exploitations/{id}/animaux?especeCode=PORC&sexe=FEMELLE&recherche=TRUIE`.
+   Les filtres facultatifs sont `recherche`, `especeCode`, `emplacementId`, `sexe`,
+   `statut`, `ageMinJours` et `ageMaxJours`. Les animaux sans date de naissance
+   sont exclus lorsqu’une borne d’âge est utilisée.
+3. Sur un lot actif de la même espèce et de la même exploitation, appelle
+   `POST /lots/{lotId}/animaux` avec `{"animalId":"<id animal>"}`. Retire ensuite
+   l’animal avec `DELETE /lots/{lotId}/animaux/{animalId}`. Les deux opérations
+   renvoient `204` et peuvent être répétées.
+
+```json
+{
+  "identifiant": "TRUIE-DEMO",
+  "especeCode": "PORC",
+  "sexe": "FEMELLE",
+  "origine": "NE_SUR_PLACE"
+}
+```
+
+Pour peser l’animal, envoie `POST /evenements` avec le corps suivant, en
+remplaçant les identifiants et la date par ceux de ton jeu de test.
+
+```json
+{
+  "type": "PESEE",
+  "exploitationId": "<id exploitation>",
+  "animalId": "<id animal>",
+  "dateEvenement": "2026-01-10",
+  "methode": "BALANCE",
+  "poidsKg": 34.5
+}
+```
+
+La réponse `201` contient le poids enregistré. Pour une pesée de lot, remplace
+`animalId` par `lotId` et indique `nbEchantillon`. Pour une estimation au ruban
+sur un bovin, sélectionne `RUBAN` et renseigne `perimetreThoraciqueCm` et
+`longueurCm`. Le serveur calcule le poids.
+
+Consulte les écritures avec `GET /animaux/{id}/historique` ou
+`GET /evenements?lotId=<id lot>&type=PESEE`. Sur `/evenements`, renseigne exactement
+une cible. Les paramètres `du` et `au` acceptent les dates ISO.

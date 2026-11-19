@@ -79,6 +79,9 @@ conflits dans les traitements de synchronisation hors ligne.
 - Vérifier en service les références optionnelles, notamment l’espèce de la race et l’appartenance de l’emplacement à l’exploitation.
 - S’appuyer sur les contraintes d’unicité PostgreSQL pour arbitrer les écritures concurrentes. Traduire uniquement la contrainte attendue en conflit métier avec `ConflitsPersistance`.
 - Enregistrer les coordonnées d’une exploitation par paire et les garder privées lors de la création.
+- Réutiliser `ReferencesCheptel` pour la sélection d’une espèce, d’une race ou d’un emplacement. Vérifier le sexe et le périmètre d’accès avant d’enregistrer un parent.
+- Rattacher uniquement des animaux actifs à un lot actif de la même espèce et dans la même exploitation. Protéger le rattachement et le retrait dans une transaction. Le lien individuel n’ajuste pas l’effectif du lot.
+- Vérifier qu’un événement vise une seule cible et que cette cible est accessible. Calculer les pesées au ruban avec des unités cohérentes et borner la taille de l’échantillon à l’effectif du lot.
 
 ## PostgreSQL local
 
