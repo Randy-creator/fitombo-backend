@@ -8,6 +8,8 @@ import com.fitombo.app.model.utilisateur.Utilisateur;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
@@ -15,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
+import java.time.Instant;
 import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -69,4 +72,14 @@ public abstract class Evenement extends EntiteUuid {
     this.saisiPar = saisiPar;
     this.notes = notes;
   }
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "type", insertable = false, updatable = false)
+  private TypeEvenement typeEvenement;
+
+  @Column(insertable = false)
+  private String statut;
+
+  @Column(name = "deleted_at")
+  private Instant deletedAt;
 }

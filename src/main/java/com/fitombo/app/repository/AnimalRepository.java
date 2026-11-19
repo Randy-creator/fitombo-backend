@@ -21,6 +21,12 @@ public interface AnimalRepository extends JpaRepository<Animal, UUID> {
                                              r.nom, a.sexe, a.dateNaissance, a.statut)
       """;
 
+  String CIBLE_VISIBLE =
+      """
+      join a.exploitation e where a.id = :id and a.deletedAt is null and
+      """
+          + ExploitationRepository.PERIMETRE;
+
   @Query(
       PROJECTION
           + """
@@ -43,13 +49,7 @@ public interface AnimalRepository extends JpaRepository<Animal, UUID> {
       @Param("filtres") FiltresAnimaux filtres,
       Pageable pageable);
 
-  @Query(
-      PROJECTION
-          + """
-          from Animal a join a.exploitation e left join a.race r
-          where a.id = :id and a.deletedAt is null and
-          """
-          + ExploitationRepository.PERIMETRE)
+  @Query(PROJECTION + " from Animal a left join a.race r " + CIBLE_VISIBLE)
   Optional<AnimalDto> findVisibleParId(
       @Param("id") UUID id, @Param("utilisateurId") UUID utilisateurId);
 
@@ -68,4 +68,7 @@ public interface AnimalRepository extends JpaRepository<Animal, UUID> {
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   Optional<Animal> findByIdAndExploitationIdAndDeletedAtIsNull(UUID id, UUID exploitationId);
+
+  @Query("select count(a) > 0 from Animal a " + CIBLE_VISIBLE)
+  boolean existeVisible(@Param("id") UUID id, @Param("utilisateurId") UUID utilisateurId);
 }

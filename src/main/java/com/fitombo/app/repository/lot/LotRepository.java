@@ -38,4 +38,12 @@ public interface LotRepository extends JpaRepository<Lot, UUID> {
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   Optional<Lot> findByIdAndExploitationIdAndDeletedAtIsNull(UUID id, UUID exploitationId);
+
+  @Query(
+      """
+      select count(l) > 0 from Lot l join l.exploitation e
+      where l.id = :id and l.deletedAt is null and
+      """
+          + ExploitationRepository.PERIMETRE)
+  boolean existeVisible(@Param("id") UUID id, @Param("utilisateurId") UUID utilisateurId);
 }
