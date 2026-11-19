@@ -16,7 +16,11 @@ public enum CodeErreur {
   LOT_CODE_UTILISE("Ce code de lot est déjà utilisé"),
   ESPECE_NON_SUIVIE_EN_LOT("Cette espèce est suivie individuellement"),
   RACE_INCOMPATIBLE("Race indisponible pour cette espèce"),
-  EMPLACEMENT_INTROUVABLE("Emplacement introuvable dans cette exploitation");
+  EMPLACEMENT_INTROUVABLE("Emplacement introuvable dans cette exploitation"),
+  ANIMAL_IDENTIFIANT_UTILISE("Cet identifiant est déjà utilisé"),
+  ANIMAL_BOUCLE_UTILISEE("Cette boucle est déjà utilisée"),
+  ESPECE_SUIVIE_EN_LOT("Cette espèce est suivie en lot"),
+  PARENT_INCOMPATIBLE("Parent indisponible pour cette espèce et ce sexe");
 
   private final String message;
 

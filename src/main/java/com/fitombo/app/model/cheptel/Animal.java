@@ -80,4 +80,51 @@ public class Animal extends EntiteUuid {
   private MiseBas miseBas;
 
   @Version private Long version;
+
+  private String boucle;
+
+  @Column(name = "marque_traditionnelle")
+  private String marqueTraditionnelle;
+
+  @Column(name = "date_naissance_estimee")
+  private boolean dateNaissanceEstimee;
+
+  @Column(name = "photo_url")
+  private String photoUrl;
+
+  public Animal(
+      Exploitation exploitation,
+      Espece espece,
+      String identifiant,
+      SexeAnimal sexe,
+      OrigineAnimal origine) {
+    this.exploitation = exploitation;
+    this.espece = espece;
+    this.identifiant = identifiant.strip();
+    this.sexe = sexe.name();
+    this.origine = origine.name();
+    this.statut = StatutAnimal.ACTIF;
+  }
+
+  public void renseignerIdentification(
+      String nom,
+      String boucle,
+      String marqueTraditionnelle,
+      LocalDate dateNaissance,
+      boolean dateNaissanceEstimee,
+      String photoUrl) {
+    this.nom = nom;
+    this.boucle = boucle == null || boucle.isBlank() ? null : boucle.strip();
+    this.marqueTraditionnelle = marqueTraditionnelle;
+    this.dateNaissance = dateNaissance;
+    this.dateNaissanceEstimee = dateNaissanceEstimee;
+    this.photoUrl = photoUrl;
+  }
+
+  public void renseignerReferences(Race race, Emplacement emplacement, Animal mere, Animal pere) {
+    this.race = race;
+    this.emplacement = emplacement;
+    this.mere = mere;
+    this.pere = pere;
+  }
 }

@@ -40,4 +40,17 @@ public interface AnimalRepository extends JpaRepository<Animal, UUID> {
           + ExploitationRepository.PERIMETRE)
   Optional<AnimalDto> findVisibleParId(
       @Param("id") UUID id, @Param("utilisateurId") UUID utilisateurId);
+
+  @Query(
+      """
+      select a from Animal a join a.exploitation e
+      where a.id = :id and a.espece.code = :especeCode and a.sexe = :sexe
+        and a.deletedAt is null and
+      """
+          + ExploitationRepository.PERIMETRE)
+  Optional<Animal> findParentVisible(
+      @Param("id") UUID id,
+      @Param("utilisateurId") UUID utilisateurId,
+      @Param("especeCode") String especeCode,
+      @Param("sexe") String sexe);
 }
