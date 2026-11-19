@@ -1,6 +1,7 @@
 package com.fitombo.app.config.security;
 
 import com.fitombo.app.config.security.connexion.LimiteConnexionProperties;
+import com.fitombo.app.config.security.inscription.InscriptionProperties;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import javax.crypto.SecretKey;
@@ -34,7 +35,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration(proxyBeanMethods = false)
 @EnableMethodSecurity
-@EnableConfigurationProperties({JwtProperties.class, LimiteConnexionProperties.class})
+@EnableConfigurationProperties({
+  JwtProperties.class,
+  LimiteConnexionProperties.class,
+  InscriptionProperties.class
+})
 class SecurityConfig {
 
   @Bean

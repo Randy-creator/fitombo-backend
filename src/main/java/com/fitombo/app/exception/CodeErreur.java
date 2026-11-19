@@ -26,7 +26,11 @@ public enum CodeErreur {
   ANIMAL_NON_ACTIF("L’animal doit être actif"),
   ANIMAL_DEJA_RATTACHE("Cet animal est déjà rattaché à un autre lot"),
   ESPECE_LOT_INCOMPATIBLE("L’animal et le lot doivent être de la même espèce"),
-  PESEE_INVALIDE("Mesures ou cible de la pesée invalides");
+  PESEE_INVALIDE("Mesures ou cible de la pesée invalides"),
+  SMS_INVALIDE("Code SMS invalide ou expiré"),
+  SMS_INDISPONIBLE("Envoi SMS indisponible"),
+  LIMITE_SMS_ATTEINTE("Réessaie avant de demander un autre code"),
+  COMPTE_DEJA_INSCRIT("Un compte existe déjà pour ces coordonnées");
 
   private final String message;
 

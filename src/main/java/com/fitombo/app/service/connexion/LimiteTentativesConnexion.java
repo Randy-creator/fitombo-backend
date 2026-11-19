@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-class LimiteTentativesConnexion {
+public class LimiteTentativesConnexion {
 
   private final LimiteConnexionProperties configuration;
   private final Map<String, Integer> tentatives = new HashMap<>();
   private long debutFenetre = System.nanoTime();
 
-  synchronized void enregistrer(String adresse) {
+  public synchronized void enregistrer(String adresse) {
     renouvelerFenetreSiExpiree(System.nanoTime());
 
     int nombre = tentatives.getOrDefault(adresse, 0);
