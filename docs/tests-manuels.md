@@ -328,3 +328,85 @@ La réponse `201 Created` contient un événement par animal. Pour un traitement
 utilise le type `TRAITEMENT` et les champs du traitement. Pour vérifier le
 contrôle de la liste, envoie deux fois le même identifiant. La réponse doit
 être `400 Bad Request` et les journaux doivent garder le même nombre de saisies.
+
+## Suivre la reproduction
+
+Dans Postman, envoie ces saisies avec `POST {{baseUrl}}/evenements` et le
+jeton du propriétaire. Reprends les champs communs du journal et choisis une
+femelle active dont l’espèce a une durée de gestation renseignée.
+
+| Type | Champs à ajouter |
+| --- | --- |
+| `SAILLIE` | `"methode":"MONTE_NATURELLE","maleId":"{{maleId}}"`. Pour une insémination, utilise `INSEMINATION_ARTIFICIELLE` et, si connue, `referenceSemence`. |
+| `DIAGNOSTIC_GESTATION` | `"positif":true,"methode":"ECHOGRAPHIE","saillieId":"{{saillieId}}"` |
+| `MISE_BAS` | `"nesVivants":1,"mortsNes":0,"saillieId":"{{saillieId}}","petits":[{"identifiant":"PETIT-01","sexe":"FEMELLE"}]` |
+
+Récupère `saillieId` dans la réponse à la première requête. Consulte
+`GET /evenements/{{saillieId}}` pour voir `details.miseBasPrevue`. Choisis des dates
+chronologiques, au plus tard aujourd’hui. Après la mise bas, vérifie dans
+`GET /exploitations/{{exploitationId}}/animaux` que le petit a été créé.
+Pour une cible lot, indique `codeLotPetits` à la place de `petits` et vérifie
+le nouveau lot dans `GET /exploitations/{{exploitationId}}/lots`.
+
+## Enregistrer les mouvements et les pertes
+
+Envoie aussi ces saisies via `POST {{baseUrl}}/evenements`.
+
+| Cas | Champs à ajouter |
+| --- | --- |
+| Vente d’un animal | `"type":"MOUVEMENT","typeMouvement":"VENTE","quantite":1,"nomTiers":"Acheteur","prixTotalAriary":300000,"poidsTotalKg":120,"numeroPieceCirculation":"PC-01"` |
+| Transfert | `"type":"MOUVEMENT","typeMouvement":"TRANSFERT","quantite":1,"exploitationDestinationId":"{{destinationId}}"` |
+| Confiage puis retour | `"type":"MOUVEMENT","typeMouvement":"CONFIAGE","quantite":1,"gardienId":"{{eleveurGardienId}}","conditions":"Garde temporaire"`, puis `RETOUR_CONFIAGE` avec la quantité et sans les champs du gardien. |
+| Décès ou perte d’un lot | `"type":"DECES","cause":"MALADIE","nombre":2`, avec `lotId` comme cible. Pour un vol, choisis `VOL`. |
+
+`ACHAT` consigne l’achat d’une cible déjà inscrite. `ABATTAGE` suit le même
+format que la vente. Pour un transfert entre exploitations, utilise deux
+exploitations que tu gères. Un transfert de lot déplace le lot entier et exige
+qu’aucun animal individuel n’y soit rattaché pour un changement d’exploitation.
+Pour un déplacement interne, indique `emplacementDestinationId`. Consulte
+`GET /evenements/{{mouvementId}}` pour vérifier l’origine et la destination.
+
+Une vente ou un abattage effectué pendant un délai d’attente renvoie
+`delaiAttenteJusquAu` dans la réponse. Vérifie ensuite l’état de l’animal
+ou le nouvel effectif du lot. Une quantité supérieure à l’effectif doit être
+refusée. La révision générique renvoie `409` pour une saillie, une mise bas,
+un mouvement ou un décès, car ces saisies ont des effets ou des dépendances
+qui demandent une procédure de révision dédiée.
+
+## Consulter la croissance et gérer les objectifs
+
+Fais deux pesées valides à des dates distinctes puis appelle
+`GET /animaux/{{animalId}}/croissance` ou `GET /lots/{{lotId}}/croissance`.
+Vérifie les points de pesée et le gain moyen quotidien. Lorsque la race et
+l’âge permettent la comparaison, la réponse fournit les bornes de référence
+et une position. Pour un lot dont l’effectif est stable, enregistre aussi
+l’alimentation entre les deux pesées pour obtenir l’indice de consommation.
+
+Envoie `POST /objectifs?exploitationId={{exploitationId}}` avec le jeton
+du propriétaire et ce corps en adaptant les dates et le poids.
+
+```json
+{
+  "animalId": "{{animalId}}",
+  "type": "POIDS_CIBLE",
+  "unite": "KG",
+  "valeurCible": 120,
+  "dateDebut": "2026-06-01",
+  "dateCible": "2027-01-01"
+}
+```
+
+| Type | Unités |
+| --- | --- |
+| `POIDS_CIBLE` | `KG`, avec une cible animal ou lot. |
+| `EFFECTIF_CIBLE` | `TETES`, avec un nombre entier. |
+| `PRODUCTION_CIBLE` | `LITRE_PAR_JOUR` ou `OEUFS_PAR_JOUR`, calculé sur la dernière journée renseignée. |
+| `MARGE_CIBLE` | `ARIARY` ou `POURCENT`, à partir des recettes et des dépenses enregistrées depuis le début de l’objectif. |
+
+Appelle `GET /objectifs?exploitationId={{exploitationId}}` pour la liste ou
+`GET /objectifs/{{objectifId}}/progression` pour suivre un objectif. Une nouvelle
+pesée peut faire changer le pourcentage, le gain restant et la date estimée.
+L’estimation de date utilise les deux dernières pesées valides de jours
+différents. Pour réviser l’objectif, envoie `PUT /objectifs/{{objectifId}}`
+avec `valeurCible`, `dateCible` et éventuellement `notes`. Pour l’abandonner,
+envoie `DELETE /objectifs/{{objectifId}}`.
