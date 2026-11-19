@@ -49,7 +49,7 @@ Sélectionner **No Auth**, puis **Body → raw → JSON** et envoyer ce corps.
 }
 ```
 
-La réponse `200` fournit `accessToken`, `tokenType` et `expiresIn` (1 800 secondes
+La réponse `200` fournit `accessToken`, `refreshToken`, `tokenType` et `expiresIn` (1 800 secondes
 par défaut). Copier `accessToken` dans **Authorization → Bearer Token** de la
 collection. Laisser les requêtes de lecture hériter de cette autorisation.
 Un mauvais mot de passe renvoie `401` et un téléphone mal formé renvoie `400`.
@@ -218,3 +218,44 @@ sur un bovin, sélectionne `RUBAN` et renseigne `perimetreThoraciqueCm` et
 Consulte les écritures avec `GET /animaux/{id}/historique` ou
 `GET /evenements?lotId=<id lot>&type=PESEE`. Sur `/evenements`, renseigne exactement
 une cible. Les paramètres `du` et `au` acceptent les dates ISO.
+
+## Tester l’inscription SMS et les sessions
+
+Dans ton `.env` local, ajoute `SMS_MODE=console` et redémarre Fitombo en profil
+`dev`. Le code de test s’affiche dans les logs de l’application. Utilise un
+numéro qui ne correspond à aucun compte de la base de test.
+
+1. Envoie `POST /auth/inscription` avec `{"telephone":"+261340009001"}` et
+   récupère le `demandeId` renvoyé par la réponse `202`.
+2. Envoie `POST /auth/verification-sms` avec ce corps et le code des logs.
+   L’inscription réussie renvoie `201`.
+
+```json
+{
+  "demandeId": "<identifiant de la demande>",
+  "telephone": "+261340009001",
+  "code": "<code à six chiffres>",
+  "nom": "Tiana",
+  "langue": "mg",
+  "motDePasse": "Inscription-demo-2026!"
+}
+```
+
+3. Connecte-toi avec `POST /auth/connexion` et récupère `accessToken` et
+   `refreshToken`. Lance `GET /me` avec l’access token comme Bearer pour
+   vérifier le compte.
+4. Envoie `POST /auth/refresh` avec `{"refreshToken":"<jeton courant>"}`.
+   Remplace les deux jetons par ceux de la réponse `200`.
+5. Envoie `POST /auth/deconnexion` avec le nouveau jeton d’accès dans
+   **Authorization → Bearer Token** et le nouveau refresh token dans le
+   corps JSON. Le serveur renvoie `204`. Une tentative de renouvellement de
+   cette session doit ensuite renvoyer `401`.
+
+Dans Postman, sélectionne **No Auth** sur les quatre appels publics
+(inscription, vérification SMS, connexion et refresh). Le code expire après
+cinq minutes, le renvoi est limité à un par minute et cinq erreurs bloquent la
+demande. Pour vérifier le rejeu, réutilise un ancien refresh token après une
+rotation. L’ancien et son successeur doivent alors être refusés.
+
+Pour l’envoi réel, configurer `SMS_MODE=twilio`, `TWILIO_ACCOUNT_SID`,
+`TWILIO_AUTH_TOKEN` et `TWILIO_FROM`. Le mode console reste réservé au poste local.
