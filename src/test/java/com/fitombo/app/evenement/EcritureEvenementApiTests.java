@@ -57,4 +57,29 @@ class EcritureEvenementApiTests extends ApiIntegrationTest {
             """)
         .andExpect(status().isBadRequest());
   }
+
+  @Test
+  void enregistreVaccinationEtControleLesDonnees() throws Exception {
+    String details =
+        """
+        "vaccin":"Vaccin enregistré","lotVaccin":"DOSE-A","rappelPrevu":"2026-09-01"
+        """;
+    enregistrer(2, "VACCINATION", details).andExpect(status().isNotFound());
+    enregistrer(1, "VACCINATION", details)
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.type").value("VACCINATION"));
+    assertThat(
+            jdbc.queryForObject(
+                "select count(*) from vaccination where vaccin = ? and lot_vaccin = 'DOSE-A'",
+                Integer.class,
+                "Vaccin enregistré"))
+        .isEqualTo(1);
+    enregistrer(
+            1,
+            "VACCINATION",
+            """
+            "vaccin":"Vaccin enregistré","rappelPrevu":"2026-01-01"
+            """)
+        .andExpect(status().isBadRequest());
+  }
 }

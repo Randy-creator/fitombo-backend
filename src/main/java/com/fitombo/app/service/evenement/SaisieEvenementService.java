@@ -3,9 +3,11 @@ package com.fitombo.app.service.evenement;
 import com.fitombo.app.dto.alimentation.CreerAlimentationRequest;
 import com.fitombo.app.dto.evenement.EvenementSaisiDto;
 import com.fitombo.app.dto.evenement.SaisieEvenement;
+import com.fitombo.app.dto.vaccination.CreerVaccinationRequest;
 import com.fitombo.app.model.evenement.Alimentation;
 import com.fitombo.app.model.evenement.Evenement;
 import com.fitombo.app.model.evenement.TypeEvenement;
+import com.fitombo.app.model.evenement.Vaccination;
 import com.fitombo.app.repository.evenement.EvenementRepository;
 import com.fitombo.app.service.evenement.CiblesEvenement.Cible;
 import java.util.UUID;
@@ -45,6 +47,18 @@ public class SaisieEvenementService {
               demandeSpecialisee.aliment(),
               demandeSpecialisee.quantiteKg(),
               demandeSpecialisee.coutAriary());
+      case CreerVaccinationRequest demandeSpecialisee ->
+          new Vaccination(
+              cible.exploitation(),
+              cible.animal(),
+              cible.lot(),
+              demande.dateEvenement(),
+              cible.auteur(),
+              demande.notes(),
+              demandeSpecialisee.vaccin(),
+              demandeSpecialisee.maladieCiblee(),
+              demandeSpecialisee.lotVaccin(),
+              demandeSpecialisee.rappelPrevu());
       default -> throw new IllegalArgumentException("Type d’événement inconnu");
     };
   }
