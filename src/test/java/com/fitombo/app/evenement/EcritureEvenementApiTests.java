@@ -107,4 +107,29 @@ class EcritureEvenementApiTests extends ApiIntegrationTest {
             """)
         .andExpect(status().isBadRequest());
   }
+
+  @Test
+  void enregistreTraitementEtControleLesDonnees() throws Exception {
+    String details =
+        """
+        "produit":"Soin enregistré","dose":"Dose prescrite","dureeJours":2,"delaiAttenteJours":5
+        """;
+    enregistrer(2, "TRAITEMENT", details).andExpect(status().isNotFound());
+    enregistrer(1, "TRAITEMENT", details)
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.type").value("TRAITEMENT"));
+    assertThat(
+            jdbc.queryForObject(
+                "select count(*) from traitement where produit = ? and fin_delai_attente = date '2026-06-08'",
+                Integer.class,
+                "Soin enregistré"))
+        .isEqualTo(1);
+    enregistrer(
+            1,
+            "TRAITEMENT",
+            """
+            "produit":"Soin enregistré","delaiAttenteJours":-1
+            """)
+        .andExpect(status().isBadRequest());
+  }
 }

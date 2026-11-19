@@ -4,10 +4,12 @@ import com.fitombo.app.dto.alimentation.CreerAlimentationRequest;
 import com.fitombo.app.dto.evenement.EvenementSaisiDto;
 import com.fitombo.app.dto.evenement.SaisieEvenement;
 import com.fitombo.app.dto.production.CreerProductionRequest;
+import com.fitombo.app.dto.traitement.CreerTraitementRequest;
 import com.fitombo.app.dto.vaccination.CreerVaccinationRequest;
 import com.fitombo.app.model.evenement.Alimentation;
 import com.fitombo.app.model.evenement.Evenement;
 import com.fitombo.app.model.evenement.Production;
+import com.fitombo.app.model.evenement.Traitement;
 import com.fitombo.app.model.evenement.TypeEvenement;
 import com.fitombo.app.model.evenement.Vaccination;
 import com.fitombo.app.repository.evenement.EvenementRepository;
@@ -72,6 +74,19 @@ public class SaisieEvenementService {
               demandeSpecialisee.typeProduction(),
               demandeSpecialisee.quantite(),
               demandeSpecialisee.unite());
+      case CreerTraitementRequest demandeSpecialisee ->
+          new Traitement(
+              cible.exploitation(),
+              cible.animal(),
+              cible.lot(),
+              demande.dateEvenement(),
+              cible.auteur(),
+              demande.notes(),
+              demandeSpecialisee.produit(),
+              demandeSpecialisee.maladie(),
+              demandeSpecialisee.dose(),
+              demandeSpecialisee.dureeJours(),
+              demandeSpecialisee.delaiAttenteJours());
       default -> throw new IllegalArgumentException("Type d’événement inconnu");
     };
   }
