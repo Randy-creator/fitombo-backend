@@ -33,7 +33,8 @@ public class ConnexionController {
   public ResponseEntity<ConnexionResponse> connecter(
       @Valid @RequestBody ConnexionRequest donnees, HttpServletRequest requete) {
     var resultat =
-        connexion.connecter(donnees.telephone(), donnees.motDePasse(), requete.getRemoteAddr());
+        connexion.connecter(
+            donnees.telephone(), donnees.email(), donnees.motDePasse(), requete.getRemoteAddr());
     return reponseJetons(resultat);
   }
 

@@ -26,7 +26,7 @@ public class SessionRepository {
         .query(
             """
             select j.id, j.utilisateur_id, j.expire_at, j.revoque_at, u.role,
-                   u.actif and u.telephone_verifie and u.deleted_at is null as compte_valide
+                   u.actif and (u.telephone_verifie or u.email_verifie) and u.deleted_at is null as compte_valide
             from jeton_rafraichissement j join utilisateur u on u.id = j.utilisateur_id
             where j.jeton_hash = ?
             """,

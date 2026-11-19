@@ -27,9 +27,9 @@ public enum CodeErreur {
   ANIMAL_DEJA_RATTACHE("Cet animal est déjà rattaché à un autre lot"),
   ESPECE_LOT_INCOMPATIBLE("L’animal et le lot doivent être de la même espèce"),
   PESEE_INVALIDE("Mesures ou cible de la pesée invalides"),
-  SMS_INVALIDE("Code SMS invalide ou expiré"),
-  SMS_INDISPONIBLE("Envoi SMS indisponible"),
-  LIMITE_SMS_ATTEINTE("Réessaie avant de demander un autre code"),
+  CODE_EMAIL_INVALIDE("Code e-mail invalide ou expiré"),
+  EMAIL_INDISPONIBLE("Envoi e-mail indisponible"),
+  LIMITE_EMAIL_ATTEINTE("Réessaie avant de demander un autre code"),
   COMPTE_DEJA_INSCRIT("Un compte existe déjà pour ces coordonnées"),
   SESSION_INVALIDE("Session invalide ou expirée");
 

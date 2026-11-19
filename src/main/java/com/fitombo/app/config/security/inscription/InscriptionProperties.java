@@ -15,7 +15,7 @@ public record InscriptionProperties(Duration dureeCode, Duration delaiRenvoi, in
         || delaiRenvoi.compareTo(dureeCode) > 0
         || maxTentatives < 1
         || maxTentatives > 20) {
-      throw new IllegalArgumentException("Configuration des codes SMS invalide");
+      throw new IllegalArgumentException("Configuration des codes e-mail invalide");
     }
   }
 }

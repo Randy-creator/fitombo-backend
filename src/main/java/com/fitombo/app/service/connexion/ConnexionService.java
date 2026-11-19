@@ -7,6 +7,7 @@ import com.fitombo.app.repository.connexion.UtilisateurRepository;
 import com.fitombo.app.repository.connexion.UtilisateurRepository.Identifiants;
 import com.fitombo.app.service.session.SessionService;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.UUID;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,18 +35,21 @@ public class ConnexionService {
     this.hashFactice = motsDePasse.encode(UUID.randomUUID().toString());
   }
 
-  public ConnexionResponse connecter(String telephone, String motDePasse, String adresse) {
+  public ConnexionResponse connecter(
+      String telephone, String email, String motDePasse, String adresse) {
     tentatives.enregistrer(adresse);
-    Identifiants compte = authentifier(telephone, motDePasse);
+    Identifiants compte = authentifier(telephone, email, motDePasse);
     return sessions.ouvrir(compte.getId(), compte.getRole());
   }
 
-  private Identifiants authentifier(String telephone, String motDePasse) {
+  private Identifiants authentifier(String telephone, String email, String motDePasse) {
     if (motDePasse.getBytes(StandardCharsets.UTF_8).length > LIMITE_OCTETS_BCRYPT) {
       throw new ExceptionApplicative(CodeErreur.IDENTIFIANTS_INVALIDES);
     }
 
-    var compte = utilisateurs.findIdentifiants(telephone);
+    var compte =
+        utilisateurs.findIdentifiants(
+            telephone, email == null ? null : email.toLowerCase(Locale.ROOT));
     String hash = compte.map(Identifiants::getMotDePasseHash).orElse(hashFactice);
     if (!motsDePasse.matches(motDePasse, hash) || compte.isEmpty()) {
       throw new ExceptionApplicative(CodeErreur.IDENTIFIANTS_INVALIDES);

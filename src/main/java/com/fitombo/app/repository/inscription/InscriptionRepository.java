@@ -13,27 +13,26 @@ import org.springframework.stereotype.Repository;
 public class InscriptionRepository {
   private final JdbcTemplate jdbc;
 
-  public void verrouiller(String telephone) {
-    jdbc.query(
-        "select pg_advisory_xact_lock(hashtextextended(?, 90210))", resultat -> {}, telephone);
+  public void verrouiller(String email) {
+    jdbc.query("select pg_advisory_xact_lock(hashtextextended(?, 90210))", resultat -> {}, email);
   }
 
-  public boolean compteExiste(String telephone) {
+  public boolean compteExiste(String email) {
     return Boolean.TRUE.equals(
         jdbc.queryForObject(
             """
-            select exists (select 1 from utilisateur where telephone = ? and deleted_at is null)
+            select exists (select 1 from utilisateur where lower(email) = ? and deleted_at is null)
             """,
             Boolean.class,
-            telephone));
+            email));
   }
 
-  public Optional<Code> dernier(String telephone) {
+  public Optional<Code> dernier(String email) {
     return jdbc
         .query(
             """
-            select id, code_hash, created_at, expire_at, utilise_at, tentatives from code_verification
-            where telephone = ? and objectif = 'INSCRIPTION' order by created_at desc, id desc limit 1
+            select id, code_hash, created_at, expire_at, utilise_at, tentatives from code_verification_email
+            where email = ? order by created_at desc, id desc limit 1
             """,
             (ligne, numero) ->
                 new Code(
@@ -43,41 +42,42 @@ public class InscriptionRepository {
                     ligne.getTimestamp("expire_at").toInstant(),
                     ligne.getTimestamp("utilise_at") != null,
                     ligne.getInt("tentatives")),
-            telephone)
+            email)
         .stream()
         .findFirst();
   }
 
-  public UUID enregistrer(String telephone, String hash, Instant maintenant, Instant expiration) {
+  public UUID enregistrer(String email, String hash, Instant maintenant, Instant expiration) {
     return jdbc.queryForObject(
         """
-        insert into code_verification (telephone, code_hash, objectif, created_at, expire_at)
-        values (?, ?, 'INSCRIPTION', ?, ?) returning id
+        insert into code_verification_email (email, code_hash, created_at, expire_at)
+        values (?, ?, ?, ?) returning id
         """,
         UUID.class,
-        telephone,
+        email,
         hash,
         Timestamp.from(maintenant),
         Timestamp.from(expiration));
   }
 
   public void noterEchec(UUID id) {
-    jdbc.update("update code_verification set tentatives = tentatives + 1 where id = ?", id);
+    jdbc.update("update code_verification_email set tentatives = tentatives + 1 where id = ?", id);
   }
 
   public void consommer(UUID id, Instant maintenant) {
     jdbc.update(
-        "update code_verification set utilise_at = ? where id = ?", Timestamp.from(maintenant), id);
+        "update code_verification_email set utilise_at = ? where id = ?",
+        Timestamp.from(maintenant),
+        id);
   }
 
-  public boolean creerCompte(
-      String nom, String telephone, String email, String langue, String hash) {
+  public boolean creerCompte(String nom, String email, String langue, String hash) {
     return Boolean.TRUE.equals(
         jdbc.queryForObject(
             """
             with compte as (
-              insert into utilisateur (nom, telephone, email, langue, mot_de_passe_hash, telephone_verifie)
-              values (?, ?, ?, ?, ?, true) on conflict do nothing returning id
+              insert into utilisateur (nom, email, langue, mot_de_passe_hash, email_verifie)
+              values (?, ?, ?, ?, true) on conflict do nothing returning id
             ), profil as (
               insert into eleveur (utilisateur_id) select id from compte returning id
             )
@@ -85,7 +85,6 @@ public class InscriptionRepository {
             """,
             Boolean.class,
             nom,
-            telephone,
             email,
             langue,
             hash));

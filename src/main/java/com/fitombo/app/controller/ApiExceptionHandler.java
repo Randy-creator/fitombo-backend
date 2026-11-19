@@ -30,9 +30,9 @@ class ApiExceptionHandler {
           case ANIMAL_DEJA_RATTACHE -> HttpStatus.CONFLICT;
           case ESPECE_LOT_INCOMPATIBLE -> HttpStatus.BAD_REQUEST;
           case PESEE_INVALIDE -> HttpStatus.BAD_REQUEST;
-          case SMS_INVALIDE -> HttpStatus.BAD_REQUEST;
-          case SMS_INDISPONIBLE -> HttpStatus.SERVICE_UNAVAILABLE;
-          case LIMITE_SMS_ATTEINTE -> HttpStatus.TOO_MANY_REQUESTS;
+          case CODE_EMAIL_INVALIDE -> HttpStatus.BAD_REQUEST;
+          case EMAIL_INDISPONIBLE -> HttpStatus.SERVICE_UNAVAILABLE;
+          case LIMITE_EMAIL_ATTEINTE -> HttpStatus.TOO_MANY_REQUESTS;
           case COMPTE_DEJA_INSCRIT -> HttpStatus.CONFLICT;
           case SESSION_INVALIDE -> HttpStatus.UNAUTHORIZED;
           case IDENTIFIANTS_INVALIDES, UTILISATEUR_NON_IDENTIFIE -> HttpStatus.UNAUTHORIZED;

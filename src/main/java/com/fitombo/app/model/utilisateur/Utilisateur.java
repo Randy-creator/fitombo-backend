@@ -36,6 +36,9 @@ public class Utilisateur extends EntiteUuid {
 
   private String email;
 
+  @Column(name = "email_verifie")
+  private boolean emailVerifie;
+
   private String langue;
 
   @Enumerated(EnumType.STRING)

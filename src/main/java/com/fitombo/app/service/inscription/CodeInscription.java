@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-class CodeSms {
+class CodeInscription {
   private final SecureRandom aleatoire = new SecureRandom();
   private final JwtProperties configuration;
 
@@ -22,22 +22,22 @@ class CodeSms {
     return String.format(Locale.ROOT, "%06d", aleatoire.nextInt(1_000_000));
   }
 
-  String hacher(String telephone, String code) {
+  String hacher(String email, String code) {
     try {
       Mac mac = Mac.getInstance("HmacSHA256");
       mac.init(
           new SecretKeySpec(configuration.secret().getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
       var message =
-          ("fitombo:inscription:" + telephone + ":" + code).getBytes(StandardCharsets.UTF_8);
+          ("fitombo:inscription-email:" + email + ":" + code).getBytes(StandardCharsets.UTF_8);
       return HexFormat.of().formatHex(mac.doFinal(message));
     } catch (GeneralSecurityException exception) {
-      throw new IllegalStateException("Calcul du hash SMS impossible", exception);
+      throw new IllegalStateException("Calcul du hash e-mail impossible", exception);
     }
   }
 
-  boolean correspond(String telephone, String code, String attendu) {
+  boolean correspond(String email, String code, String attendu) {
     return MessageDigest.isEqual(
-        hacher(telephone, code).getBytes(StandardCharsets.US_ASCII),
+        hacher(email, code).getBytes(StandardCharsets.US_ASCII),
         attendu.getBytes(StandardCharsets.US_ASCII));
   }
 }

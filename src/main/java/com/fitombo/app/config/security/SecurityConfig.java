@@ -59,7 +59,7 @@ class SecurityConfig {
               .requestMatchers(
                   HttpMethod.POST,
                   "/auth/inscription",
-                  "/auth/verification-sms",
+                  "/auth/verification-email",
                   "/auth/connexion",
                   "/auth/refresh")
               .permitAll();

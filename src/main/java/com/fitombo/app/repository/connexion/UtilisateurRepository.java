@@ -14,10 +14,13 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, UUID> 
       """
       select u.id as id, u.role as role, u.motDePasseHash as motDePasseHash
       from Utilisateur u
-      where u.telephone = :telephone and u.actif = true and u.telephoneVerifie = true
+      where u.actif = true
+        and ((u.telephone = :telephone and u.telephoneVerifie = true)
+          or (lower(u.email) = :email and u.emailVerifie = true))
         and u.deletedAt is null and u.motDePasseHash is not null
       """)
-  Optional<Identifiants> findIdentifiants(@Param("telephone") String telephone);
+  Optional<Identifiants> findIdentifiants(
+      @Param("telephone") String telephone, @Param("email") String email);
 
   interface Identifiants {
     UUID getId();
