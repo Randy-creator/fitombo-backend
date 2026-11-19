@@ -147,3 +147,26 @@ Récupère l’identifiant de l’alerte dans la réponse de `GET /alertes` avan
 faire le `PATCH`. Ensuite, filtre avec `statut=VUE` pour vérifier le changement.
 Teste aussi les emplacements et les lots avec l’identifiant de la ferme privée
 `30000000-0000-4000-8000-000000000002`. Le membre de démonstration doit recevoir `404`.
+
+## Créer une exploitation, un emplacement et un lot
+
+Pour ces requêtes, utilise le compte propriétaire de **Ferme API**
+(`+261340001001`). Dans la préparation du login de démonstration, utilise
+l’identifiant `10000000-0000-4000-8000-000000000001` pour lui attribuer le mot
+de passe de test, puis utilise le jeton obtenu avec ce numéro.
+
+| Route | Corps JSON de démonstration |
+| --- | --- |
+| `POST /exploitations` | `{"nom":"Nouvelle ferme","systeme":"EXTENSIF","commune":"Antsirabe"}` |
+| `POST /exploitations/{id}/emplacements` | `{"nom":"Parc A","type":"PARC","capacite":20}` |
+| `POST /exploitations/{id}/lots` | `{"code":"LOT-A","especeCode":"PORC","dateCreation":"2026-01-01","effectifInitial":18}` |
+
+Après chaque `201`, récupère l’identifiant de la réponse. Utilise l’identifiant
+de l’exploitation dans les deux dernières routes. Tu peux aussi indiquer
+`emplacementId` dans la création du lot et `raceId` obtenu par
+`GET /especes/PORC/races`. Le lot démarre avec le statut `ACTIF` et un
+effectif actuel égal à son effectif initial.
+
+Pour vérifier les refus, renvoie la même création avec le même propriétaire
+(`409`), essaie un effectif nul (`400`) ou crée un emplacement dans la ferme
+avec le jeton du membre lecteur (`404`).

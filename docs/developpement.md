@@ -73,6 +73,13 @@ Conserver l’historique des événements. Pour corriger une saisie, annuler l�
 et le relier à l’événement correctif. Prévoir les doublons, l’ordre inversé et les
 conflits dans les traitements de synchronisation hors ligne.
 
+## Créations et concurrence
+
+- Déterminer le propriétaire à partir de l’utilisateur authentifié. Pour les écritures réservées au propriétaire, réutiliser `ExploitationService.chargerPourGestion`.
+- Vérifier en service les références optionnelles, notamment l’espèce de la race et l’appartenance de l’emplacement à l’exploitation.
+- S’appuyer sur les contraintes d’unicité PostgreSQL pour arbitrer les écritures concurrentes. Traduire uniquement la contrainte attendue en conflit métier avec `ConflitsPersistance`.
+- Enregistrer les coordonnées d’une exploitation par paire et les garder privées lors de la création.
+
 ## PostgreSQL local
 
 La connexion et le pool Hikari sont configurés dans
