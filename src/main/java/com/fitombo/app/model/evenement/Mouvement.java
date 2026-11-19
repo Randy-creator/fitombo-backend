@@ -48,6 +48,10 @@ public class Mouvement extends Evenement {
   @JoinColumn(name = "exploitation_destination_id")
   private Exploitation exploitationDestination;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "exploitation_origine_id")
+  private Exploitation exploitationOrigine;
+
   @Column(name = "prix_total_ariary")
   private BigDecimal prixTotalAriary;
 
@@ -85,6 +89,7 @@ public class Mouvement extends Evenement {
     this.numeroPieceCirculation = numeroPieceCirculation;
     this.tiers = tiers;
     this.exploitationDestination = destination;
+    this.exploitationOrigine = exploitation;
     this.emplacementDestination = emplacement;
   }
 }

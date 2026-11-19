@@ -14,8 +14,8 @@ public interface DelaiAttenteRepository extends Repository<Traitement, UUID> {
           where e.statut = 'VALIDE' and e.deleted_at is null and e.exploitation_id = :exploitationId
             and e.date_evenement <= :date and t.fin_delai_attente > :date
             and (e.animal_id = :animalId or e.lot_id = :lotId
-                 or exists (select 1 from animal a where a.id = e.animal_id
-                              and a.lot_id = :lotId and a.deleted_at is null))
+                 or (cast(:animalId as uuid) is null and exists (select 1 from animal a where a.id = e.animal_id
+                              and a.lot_id = :lotId and a.deleted_at is null)))
           """,
       nativeQuery = true)
   LocalDate finDelai(UUID exploitationId, UUID animalId, UUID lotId, LocalDate date);

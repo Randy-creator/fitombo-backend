@@ -1,6 +1,7 @@
 package com.fitombo.app.evenement;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -396,6 +397,56 @@ class EcritureEvenementApiTests extends ApiIntegrationTest {
                 """,
                 Integer.class))
         .isEqualTo(1);
+  }
+
+  @Test
+  void transfereUnAnimalEtTraceLesDeuxExploitations() throws Exception {
+    UUID destination =
+        jdbc.queryForObject(
+            """
+            insert into exploitation(eleveur_id, nom)
+            values ('20000000-0000-4000-8000-000000000001', 'Destination transfert')
+            returning id
+            """,
+            UUID.class);
+    UUID animal = trouverAnimal("API-ACTIF");
+    enregistrer(
+            1,
+            "MOUVEMENT",
+            """
+            "typeMouvement":"TRANSFERT","quantite":1,
+            "exploitationDestinationId":"30000000-0000-4000-8000-000000000002"
+            """)
+        .andExpect(status().isNotFound());
+    enregistrer(
+            1,
+            "MOUVEMENT",
+            """
+            "typeMouvement":"TRANSFERT","quantite":1,"exploitationDestinationId":"%s"
+            """
+                .formatted(destination))
+        .andExpect(status().isCreated());
+    UUID evenement =
+        jdbc.queryForObject(
+            """
+            select id from evenement where animal_id = ? and type = 'MOUVEMENT'
+            """,
+            UUID.class,
+            animal);
+    assertThat(
+            jdbc.queryForObject(
+                "select exploitation_id from animal where id = ?", UUID.class, animal))
+        .isEqualTo(destination);
+    entites.clear();
+
+    mvc.perform(get("/evenements/{id}", evenement).with(utilisateur(2)))
+        .andExpect(status().isNotFound());
+    mvc.perform(get("/evenements/{id}", evenement).with(utilisateur(1)))
+        .andExpect(status().isOk())
+        .andExpect(
+            jsonPath("$.details.exploitationOrigineId")
+                .value("30000000-0000-4000-8000-000000000001"))
+        .andExpect(jsonPath("$.details.exploitationDestinationId").value(destination.toString()));
   }
 
   private ResultActions annuler(int auteur, UUID id, String motif) throws Exception {

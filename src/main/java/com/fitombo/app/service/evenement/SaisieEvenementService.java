@@ -11,17 +11,21 @@ import com.fitombo.app.dto.reproduction.CreerMiseBasRequest;
 import com.fitombo.app.dto.reproduction.CreerSaillieRequest;
 import com.fitombo.app.dto.traitement.CreerTraitementRequest;
 import com.fitombo.app.dto.vaccination.CreerVaccinationRequest;
+import com.fitombo.app.exception.CodeErreur;
 import com.fitombo.app.model.evenement.Alimentation;
 import com.fitombo.app.model.evenement.Evenement;
+import com.fitombo.app.model.evenement.Mouvement;
 import com.fitombo.app.model.evenement.Production;
 import com.fitombo.app.model.evenement.Traitement;
 import com.fitombo.app.model.evenement.TypeEvenement;
 import com.fitombo.app.model.evenement.Vaccination;
+import com.fitombo.app.repository.ConflitsPersistance;
 import com.fitombo.app.repository.evenement.EvenementRepository;
 import com.fitombo.app.service.deces.DecesService;
 import com.fitombo.app.service.evenement.CiblesEvenement.Cible;
 import com.fitombo.app.service.mouvement.MouvementService;
 import com.fitombo.app.service.reproduction.ReproductionService;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,11 +50,14 @@ public class SaisieEvenementService {
     if (original != null) {
       evenement.remplacer(original);
     }
-    evenements.saveAndFlush(evenement);
+    ConflitsPersistance.traduire(
+        () -> evenements.saveAndFlush(evenement),
+        Map.of(
+            "uq_animal_identifiant", CodeErreur.ANIMAL_IDENTIFIANT_UTILISE,
+            "uq_lot_code", CodeErreur.LOT_CODE_UTILISE));
+
     var finDelai =
-        evenement instanceof com.fitombo.app.model.evenement.Mouvement mouvement
-            ? mouvements.finaliser(cible, mouvement)
-            : null;
+        evenement instanceof Mouvement mouvement ? mouvements.finaliser(cible, mouvement) : null;
     return new EvenementSaisiDto(
         evenement.getId(),
         TypeEvenement.valueOf(demande.type()),

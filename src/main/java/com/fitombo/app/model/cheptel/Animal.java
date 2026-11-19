@@ -138,9 +138,11 @@ public class Animal extends EntiteUuid {
   }
 
   public void transferer(Exploitation destination, Emplacement emplacement) {
-    this.exploitation = destination;
+    if (!exploitation.getId().equals(destination.getId())) {
+      lot = null;
+    }
+    exploitation = destination;
     this.emplacement = emplacement;
-    this.lot = null;
   }
 
   public void affecterLot(Lot nouveauLot) {

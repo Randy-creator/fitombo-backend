@@ -10,7 +10,9 @@ import com.fitombo.app.model.evenement.Mouvement;
 import com.fitombo.app.model.evenement.TypeMouvement;
 import com.fitombo.app.model.exploitation.Exploitation;
 import com.fitombo.app.model.exploitation.Tiers;
+import com.fitombo.app.repository.ConflitsPersistance;
 import com.fitombo.app.repository.animal.AnimalRepository;
+import com.fitombo.app.repository.evenement.EvenementRepository;
 import com.fitombo.app.repository.mouvement.ConfiageRepository;
 import com.fitombo.app.repository.mouvement.DelaiAttenteRepository;
 import com.fitombo.app.service.cheptel.ReferencesCheptel;
@@ -18,6 +20,7 @@ import com.fitombo.app.service.cheptel.SortieCheptel;
 import com.fitombo.app.service.evenement.CiblesEvenement.Cible;
 import com.fitombo.app.service.exploitation.ExploitationService;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -31,6 +34,7 @@ public class MouvementService {
   private final ConfiageRepository confiages;
   private final DelaiAttenteRepository delais;
   private final SortieCheptel sorties;
+  private final EvenementRepository evenements;
 
   public Mouvement creer(Cible cible, CreerMouvementRequest demande) {
     verifierCible(cible, demande);
@@ -82,6 +86,15 @@ public class MouvementService {
     return switch (mouvement.getTypeMouvement()) {
       case TRANSFERT -> {
         transferer(cible, mouvement);
+        ConflitsPersistance.traduire(
+            () -> {
+              evenements.flush();
+              return mouvement;
+            },
+            Map.of(
+                "uq_animal_identifiant", CodeErreur.ANIMAL_IDENTIFIANT_UTILISE,
+                "uq_animal_boucle", CodeErreur.ANIMAL_BOUCLE_UTILISEE,
+                "uq_lot_code", CodeErreur.LOT_CODE_UTILISE));
         yield null;
       }
       case VENTE, ABATTAGE -> delaiAttente(cible, mouvement);
@@ -112,16 +125,16 @@ public class MouvementService {
       return null;
     }
     UUID dest = demande.exploitationDestinationId();
-    if (dest == null && demande.emplacementDestinationId() == null) {
+    boolean transfertInterne = dest == null || dest.equals(cible.exploitation().getId());
+    if ((transfertInterne && demande.emplacementDestinationId() == null)
+        || (cible.lot() != null && cible.lot().getEffectifActuel() != demande.quantite())
+        || (!transfertInterne
+            && cible.lot() != null
+            && animaux.existsByLotIdAndDeletedAtIsNull(cible.lot().getId()))) {
       throw invalide();
     }
-    if (dest == null || dest.equals(cible.exploitation().getId())) {
+    if (transfertInterne) {
       return cible.exploitation();
-    }
-    if (cible.lot() != null
-        && (cible.lot().getEffectifActuel() != demande.quantite()
-            || animaux.existsByLotIdAndDeletedAtIsNull(cible.lot().getId()))) {
-      throw invalide();
     }
     return exploitations.chargerPourGestion(cible.auteur().getId(), dest);
   }

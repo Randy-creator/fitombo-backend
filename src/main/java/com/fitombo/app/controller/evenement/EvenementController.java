@@ -6,11 +6,13 @@ import com.fitombo.app.dto.PageResult;
 import com.fitombo.app.dto.evenement.AnnulerEvenementRequest;
 import com.fitombo.app.dto.evenement.CorrigerEvenementRequest;
 import com.fitombo.app.dto.evenement.EnregistrerEvenementsGroupesRequest;
+import com.fitombo.app.dto.evenement.EvenementDetailDto;
 import com.fitombo.app.dto.evenement.EvenementSaisiDto;
 import com.fitombo.app.dto.evenement.SaisieEvenement;
 import com.fitombo.app.dto.historique.EvenementHistoriqueDto;
 import com.fitombo.app.dto.historique.FiltresEvenements;
 import com.fitombo.app.dto.pesee.CreerPeseeRequest;
+import com.fitombo.app.service.evenement.DetailEvenementService;
 import com.fitombo.app.service.evenement.RevisionEvenementService;
 import com.fitombo.app.service.evenement.SaisieEvenementService;
 import com.fitombo.app.service.evenement.SaisieGroupeeService;
@@ -39,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class EvenementController {
   private final HistoriqueService historique;
+  private final DetailEvenementService details;
   private final PeseeService pesees;
   private final SaisieEvenementService saisies;
   private final SaisieGroupeeService saisiesGroupees;
@@ -51,6 +54,12 @@ public class EvenementController {
       @PageableDefault(size = 20, sort = "dateEvenement", direction = Sort.Direction.DESC)
           Pageable pageable) {
     return historique.lister(utilisateurId, filtres, stabiliser(pageable));
+  }
+
+  @GetMapping("/evenements/{id}")
+  public EvenementDetailDto consulter(
+      @UtilisateurCourant UUID utilisateurId, @PathVariable UUID id) {
+    return details.consulter(utilisateurId, id);
   }
 
   @GetMapping("/animaux/{id}/historique")
