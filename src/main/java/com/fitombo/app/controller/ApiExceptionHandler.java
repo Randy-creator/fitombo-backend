@@ -13,6 +13,7 @@ class ApiExceptionHandler {
   ProblemDetail traiter(ExceptionApplicative exception) {
     HttpStatus statut =
         switch (exception.code()) {
+          case MOUVEMENT_INVALIDE -> HttpStatus.BAD_REQUEST;
           case REPRODUCTION_INVALIDE -> HttpStatus.BAD_REQUEST;
           case REVISION_AVEC_EFFETS -> HttpStatus.CONFLICT;
           case SORTIE_CHEPTEL_INVALIDE -> HttpStatus.BAD_REQUEST;

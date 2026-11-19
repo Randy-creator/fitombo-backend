@@ -347,6 +347,57 @@ class EcritureEvenementApiTests extends ApiIntegrationTest {
         .containsEntry("nes_vivants", 1);
   }
 
+  @Test
+  void vendUnAnimalEtSignaleLeDelaiAttente() throws Exception {
+    enregistrer(
+            1,
+            "TRAITEMENT",
+            """
+            "produit":"Soin avant vente","delaiAttenteJours":10
+            """)
+        .andExpect(status().isCreated());
+    String vente =
+        """
+        "typeMouvement":"VENTE","quantite":1,"nomTiers":"Acheteur test",
+        "prixTotalAriary":500000,"poidsTotalKg":200,"numeroPieceCirculation":"PIECE-TEST"
+        """;
+    enregistrer(2, "MOUVEMENT", vente).andExpect(status().isNotFound());
+    enregistrer(1, "MOUVEMENT", vente)
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.delaiAttenteJusquAu").value("2026-06-11"));
+    assertThat(
+            jdbc.queryForObject(
+                "select statut from animal where id = ?", String.class, trouverAnimal("API-ACTIF")))
+        .isEqualTo("VENDU");
+  }
+
+  @Test
+  void confieUnAnimalPuisMetFinAuConfiage() throws Exception {
+    enregistrer(
+            1,
+            "MOUVEMENT",
+            """
+            "typeMouvement":"CONFIAGE","quantite":1,
+            "gardienId":"20000000-0000-4000-8000-000000000004","conditions":"Garde temporaire"
+            """)
+        .andExpect(status().isCreated());
+    enregistrer(
+            1,
+            "MOUVEMENT",
+            """
+            "typeMouvement":"RETOUR_CONFIAGE","quantite":1
+            """)
+        .andExpect(status().isCreated());
+    assertThat(
+            jdbc.queryForObject(
+                """
+                select count(*) from propriete where type = 'GARDIEN'
+                  and conditions = 'Garde temporaire' and date_fin is not null
+                """,
+                Integer.class))
+        .isEqualTo(1);
+  }
+
   private ResultActions annuler(int auteur, UUID id, String motif) throws Exception {
     return mvc.perform(
         patch("/evenements/{id}/annulation", id)

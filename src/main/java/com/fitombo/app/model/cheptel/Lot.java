@@ -64,6 +64,11 @@ public class Lot extends EntiteUuid {
 
   @Version private Long version;
 
+  public void transferer(Exploitation destination, Emplacement emplacement) {
+    this.exploitation = destination;
+    this.emplacement = emplacement;
+  }
+
   public void retirerEffectif(int nombre, StatutLot statutFinal, LocalDate date) {
     effectifActuel -= nombre;
     if (effectifActuel == 0) {

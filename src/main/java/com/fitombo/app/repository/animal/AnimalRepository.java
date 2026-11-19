@@ -67,6 +67,8 @@ public interface AnimalRepository extends JpaRepository<Animal, UUID> {
       @Param("especeCode") String especeCode,
       @Param("sexe") String sexe);
 
+  boolean existsByLotIdAndDeletedAtIsNull(UUID lotId);
+
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   Optional<Animal> findByIdAndExploitationIdAndDeletedAtIsNull(UUID id, UUID exploitationId);
 

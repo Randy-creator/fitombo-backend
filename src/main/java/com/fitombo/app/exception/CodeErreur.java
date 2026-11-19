@@ -33,6 +33,7 @@ public enum CodeErreur {
   SORTIE_CHEPTEL_INVALIDE("Quantité ou date incompatible avec la sortie du cheptel"),
   REVISION_AVEC_EFFETS("Cet événement a modifié le cheptel et nécessite une révision dédiée"),
   REPRODUCTION_INVALIDE("Cible, ascendance ou données de reproduction incompatibles"),
+  MOUVEMENT_INVALIDE("Les données sont incompatibles avec ce mouvement"),
   EVENEMENT_INTROUVABLE("Événement introuvable"),
   PESEE_INVALIDE("Mesures ou cible de la pesée invalides"),
   CODE_EMAIL_INVALIDE("Code e-mail invalide ou expiré"),

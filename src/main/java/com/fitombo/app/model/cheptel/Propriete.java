@@ -40,5 +40,20 @@ public class Propriete extends EntiteUuid {
   @JoinColumn(name = "eleveur_id", nullable = false)
   private Eleveur eleveur;
 
+  private String conditions;
+
   @Version private Long version;
+
+  public Propriete(Animal animal, Eleveur gardien, LocalDate debut, String conditions) {
+    this.animal = animal;
+    this.eleveur = gardien;
+    this.type = "GARDIEN";
+    this.partPourcentage = new BigDecimal("100");
+    this.dateDebut = debut;
+    this.conditions = conditions;
+  }
+
+  public void terminer(LocalDate date) {
+    dateFin = date;
+  }
 }

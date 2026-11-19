@@ -4,6 +4,7 @@ import com.fitombo.app.dto.alimentation.CreerAlimentationRequest;
 import com.fitombo.app.dto.deces.CreerDecesRequest;
 import com.fitombo.app.dto.evenement.EvenementSaisiDto;
 import com.fitombo.app.dto.evenement.SaisieEvenement;
+import com.fitombo.app.dto.mouvement.CreerMouvementRequest;
 import com.fitombo.app.dto.production.CreerProductionRequest;
 import com.fitombo.app.dto.reproduction.CreerDiagnosticGestationRequest;
 import com.fitombo.app.dto.reproduction.CreerMiseBasRequest;
@@ -19,6 +20,7 @@ import com.fitombo.app.model.evenement.Vaccination;
 import com.fitombo.app.repository.evenement.EvenementRepository;
 import com.fitombo.app.service.deces.DecesService;
 import com.fitombo.app.service.evenement.CiblesEvenement.Cible;
+import com.fitombo.app.service.mouvement.MouvementService;
 import com.fitombo.app.service.reproduction.ReproductionService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SaisieEvenementService {
   private final CiblesEvenement cibles;
+  private final MouvementService mouvements;
   private final ReproductionService reproduction;
   private final DecesService deces;
   private final EvenementRepository evenements;
@@ -44,12 +47,17 @@ public class SaisieEvenementService {
       evenement.remplacer(original);
     }
     evenements.saveAndFlush(evenement);
+    var finDelai =
+        evenement instanceof com.fitombo.app.model.evenement.Mouvement mouvement
+            ? mouvements.finaliser(cible, mouvement)
+            : null;
     return new EvenementSaisiDto(
         evenement.getId(),
         TypeEvenement.valueOf(demande.type()),
         demande.animalId(),
         demande.lotId(),
-        demande.dateEvenement());
+        demande.dateEvenement(),
+        finDelai);
   }
 
   private Evenement creer(Cible cible, SaisieEvenement demande) {
@@ -105,6 +113,7 @@ public class SaisieEvenementService {
       case CreerSaillieRequest saisie -> reproduction.saillie(cible, saisie);
       case CreerDiagnosticGestationRequest saisie -> reproduction.diagnostic(cible, saisie);
       case CreerMiseBasRequest saisie -> reproduction.miseBas(cible, saisie);
+      case CreerMouvementRequest saisie -> mouvements.creer(cible, saisie);
       default -> throw new IllegalArgumentException("Type d’événement inconnu");
     };
   }

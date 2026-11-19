@@ -137,6 +137,12 @@ public class Animal extends EntiteUuid {
     this.miseBas = miseBas;
   }
 
+  public void transferer(Exploitation destination, Emplacement emplacement) {
+    this.exploitation = destination;
+    this.emplacement = emplacement;
+    this.lot = null;
+  }
+
   public void affecterLot(Lot nouveauLot) {
     this.lot = nouveauLot;
   }
