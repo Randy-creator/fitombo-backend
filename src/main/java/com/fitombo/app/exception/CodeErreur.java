@@ -25,7 +25,8 @@ public enum CodeErreur {
   LOT_CLOTURE("Le lot doit être actif"),
   ANIMAL_NON_ACTIF("L’animal doit être actif"),
   ANIMAL_DEJA_RATTACHE("Cet animal est déjà rattaché à un autre lot"),
-  ESPECE_LOT_INCOMPATIBLE("L’animal et le lot doivent être de la même espèce");
+  ESPECE_LOT_INCOMPATIBLE("L’animal et le lot doivent être de la même espèce"),
+  PESEE_INVALIDE("Mesures ou cible de la pesée invalides");
 
   private final String message;
 

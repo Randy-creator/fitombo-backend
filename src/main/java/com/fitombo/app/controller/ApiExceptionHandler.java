@@ -29,6 +29,7 @@ class ApiExceptionHandler {
           case ANIMAL_NON_ACTIF -> HttpStatus.CONFLICT;
           case ANIMAL_DEJA_RATTACHE -> HttpStatus.CONFLICT;
           case ESPECE_LOT_INCOMPATIBLE -> HttpStatus.BAD_REQUEST;
+          case PESEE_INVALIDE -> HttpStatus.BAD_REQUEST;
           case IDENTIFIANTS_INVALIDES, UTILISATEUR_NON_IDENTIFIE -> HttpStatus.UNAUTHORIZED;
           case LIMITE_CONNEXION_ATTEINTE -> HttpStatus.TOO_MANY_REQUESTS;
           case TRI_INVALIDE -> HttpStatus.BAD_REQUEST;

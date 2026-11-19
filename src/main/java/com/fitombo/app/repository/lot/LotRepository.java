@@ -35,4 +35,7 @@ public interface LotRepository extends JpaRepository<Lot, UUID> {
       """
           + ExploitationRepository.PERIMETRE)
   Optional<Lot> findPourGestion(@Param("id") UUID id, @Param("utilisateurId") UUID utilisateurId);
+
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  Optional<Lot> findByIdAndExploitationIdAndDeletedAtIsNull(UUID id, UUID exploitationId);
 }

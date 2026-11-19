@@ -54,4 +54,19 @@ public abstract class Evenement extends EntiteUuid {
   private Evenement corrigeEvenement;
 
   @Version private Long version;
+
+  protected Evenement(
+      Exploitation exploitation,
+      Animal animal,
+      Lot lot,
+      LocalDate dateEvenement,
+      Utilisateur saisiPar,
+      String notes) {
+    this.exploitation = exploitation;
+    this.animal = animal;
+    this.lot = lot;
+    this.dateEvenement = dateEvenement;
+    this.saisiPar = saisiPar;
+    this.notes = notes;
+  }
 }
