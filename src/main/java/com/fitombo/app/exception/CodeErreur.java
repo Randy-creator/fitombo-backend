@@ -30,7 +30,8 @@ public enum CodeErreur {
   SMS_INVALIDE("Code SMS invalide ou expiré"),
   SMS_INDISPONIBLE("Envoi SMS indisponible"),
   LIMITE_SMS_ATTEINTE("Réessaie avant de demander un autre code"),
-  COMPTE_DEJA_INSCRIT("Un compte existe déjà pour ces coordonnées");
+  COMPTE_DEJA_INSCRIT("Un compte existe déjà pour ces coordonnées"),
+  SESSION_INVALIDE("Session invalide ou expirée");
 
   private final String message;
 

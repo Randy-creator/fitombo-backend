@@ -5,6 +5,7 @@ import com.fitombo.app.exception.CodeErreur;
 import com.fitombo.app.exception.ExceptionApplicative;
 import com.fitombo.app.repository.connexion.UtilisateurRepository;
 import com.fitombo.app.repository.connexion.UtilisateurRepository.Identifiants;
+import com.fitombo.app.service.session.SessionService;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,18 +18,18 @@ public class ConnexionService {
 
   private final UtilisateurRepository utilisateurs;
   private final PasswordEncoder motsDePasse;
-  private final JetonAccesService jetons;
+  private final SessionService sessions;
   private final LimiteTentativesConnexion tentatives;
   private final String hashFactice;
 
   ConnexionService(
       UtilisateurRepository utilisateurs,
       PasswordEncoder motsDePasse,
-      JetonAccesService jetons,
+      SessionService sessions,
       LimiteTentativesConnexion tentatives) {
     this.utilisateurs = utilisateurs;
     this.motsDePasse = motsDePasse;
-    this.jetons = jetons;
+    this.sessions = sessions;
     this.tentatives = tentatives;
     this.hashFactice = motsDePasse.encode(UUID.randomUUID().toString());
   }
@@ -36,7 +37,7 @@ public class ConnexionService {
   public ConnexionResponse connecter(String telephone, String motDePasse, String adresse) {
     tentatives.enregistrer(adresse);
     Identifiants compte = authentifier(telephone, motDePasse);
-    return jetons.emettre(compte.getId(), compte.getRole());
+    return sessions.ouvrir(compte.getId(), compte.getRole());
   }
 
   private Identifiants authentifier(String telephone, String motDePasse) {

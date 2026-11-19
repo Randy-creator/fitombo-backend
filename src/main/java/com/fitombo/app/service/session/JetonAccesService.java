@@ -1,4 +1,4 @@
-package com.fitombo.app.service.connexion;
+package com.fitombo.app.service.session;
 
 import com.fitombo.app.config.security.JwtProperties;
 import com.fitombo.app.dto.connexion.ConnexionResponse;
@@ -20,7 +20,7 @@ class JetonAccesService {
   private final JwtEncoder encodeur;
   private final JwtProperties configuration;
 
-  ConnexionResponse emettre(UUID utilisateurId, Role role) {
+  ConnexionResponse emettre(UUID utilisateurId, Role role, String refreshToken) {
     var duree = configuration.accessTokenTtl();
     Instant maintenant = Instant.now();
     var claims =
@@ -34,6 +34,6 @@ class JetonAccesService {
             .build();
     var header = JwsHeader.with(MacAlgorithm.HS256).type("JWT").build();
     var jeton = encodeur.encode(JwtEncoderParameters.from(header, claims));
-    return new ConnexionResponse(jeton.getTokenValue(), "Bearer", duree.toSeconds());
+    return new ConnexionResponse(jeton.getTokenValue(), "Bearer", duree.toSeconds(), refreshToken);
   }
 }

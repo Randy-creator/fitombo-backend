@@ -9,9 +9,16 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 @ConfigurationProperties("app.security.jwt")
 public record JwtProperties(
-    @NotBlank String secret, @NotBlank String issuer, @NotNull Duration accessTokenTtl) {
+    @NotBlank String secret,
+    @NotBlank String issuer,
+    @NotNull Duration accessTokenTtl,
+    @NotNull Duration refreshTokenTtl) {
 
   public JwtProperties {
+    if (refreshTokenTtl != null && (refreshTokenTtl.isZero() || refreshTokenTtl.isNegative())) {
+      throw new IllegalArgumentException(
+          "La durée du jeton de rafraîchissement doit être positive");
+    }
     if (accessTokenTtl != null
         && (accessTokenTtl.compareTo(Duration.ofSeconds(1)) < 0
             || accessTokenTtl.compareTo(Duration.ofMinutes(30)) > 0)) {

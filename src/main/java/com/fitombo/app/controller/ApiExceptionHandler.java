@@ -34,6 +34,7 @@ class ApiExceptionHandler {
           case SMS_INDISPONIBLE -> HttpStatus.SERVICE_UNAVAILABLE;
           case LIMITE_SMS_ATTEINTE -> HttpStatus.TOO_MANY_REQUESTS;
           case COMPTE_DEJA_INSCRIT -> HttpStatus.CONFLICT;
+          case SESSION_INVALIDE -> HttpStatus.UNAUTHORIZED;
           case IDENTIFIANTS_INVALIDES, UTILISATEUR_NON_IDENTIFIE -> HttpStatus.UNAUTHORIZED;
           case LIMITE_CONNEXION_ATTEINTE -> HttpStatus.TOO_MANY_REQUESTS;
           case TRI_INVALIDE -> HttpStatus.BAD_REQUEST;
