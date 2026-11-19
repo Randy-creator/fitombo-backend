@@ -2,6 +2,7 @@ package com.fitombo.app.repository.emplacement;
 
 import com.fitombo.app.dto.emplacement.EmplacementDto;
 import com.fitombo.app.model.exploitation.Emplacement;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,4 +19,6 @@ public interface EmplacementRepository extends JpaRepository<Emplacement, UUID> 
       """)
   Page<EmplacementDto> findVisibles(
       @Param("exploitationId") UUID exploitationId, Pageable pageable);
+
+  Optional<Emplacement> findByIdAndExploitationIdAndDeletedAtIsNull(UUID id, UUID exploitationId);
 }

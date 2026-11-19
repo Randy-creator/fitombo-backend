@@ -2,6 +2,7 @@ package com.fitombo.app.repository;
 
 import com.fitombo.app.dto.RaceDto;
 import com.fitombo.app.model.referentiel.Race;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,4 +20,6 @@ public interface RaceRepository extends JpaRepository<Race, UUID> {
       where r.actif = true and e.actif = true and e.code = :code
       """)
   Page<RaceDto> findActivesParEspece(@Param("code") String code, Pageable pageable);
+
+  Optional<Race> findByIdAndEspeceCodeAndActifTrue(UUID id, String especeCode);
 }

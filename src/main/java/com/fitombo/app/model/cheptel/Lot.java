@@ -60,4 +60,23 @@ public class Lot extends EntiteUuid {
   private Instant deletedAt;
 
   @Version private Long version;
+
+  public Lot(
+      Exploitation exploitation,
+      Espece espece,
+      Race race,
+      Emplacement emplacement,
+      String code,
+      LocalDate dateCreation,
+      int effectifInitial) {
+    this.exploitation = exploitation;
+    this.espece = espece;
+    this.race = race;
+    this.emplacement = emplacement;
+    this.code = code.strip();
+    this.dateCreation = dateCreation;
+    this.effectifInitial = effectifInitial;
+    this.effectifActuel = effectifInitial;
+    this.statut = StatutLot.ACTIF;
+  }
 }

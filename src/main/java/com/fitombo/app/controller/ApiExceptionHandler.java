@@ -16,6 +16,10 @@ class ApiExceptionHandler {
           case ELEVEUR_INTROUVABLE -> HttpStatus.NOT_FOUND;
           case EXPLOITATION_NOM_UTILISE -> HttpStatus.CONFLICT;
           case EMPLACEMENT_NOM_UTILISE -> HttpStatus.CONFLICT;
+          case LOT_CODE_UTILISE -> HttpStatus.CONFLICT;
+          case ESPECE_NON_SUIVIE_EN_LOT -> HttpStatus.BAD_REQUEST;
+          case RACE_INCOMPATIBLE -> HttpStatus.BAD_REQUEST;
+          case EMPLACEMENT_INTROUVABLE -> HttpStatus.NOT_FOUND;
           case IDENTIFIANTS_INVALIDES, UTILISATEUR_NON_IDENTIFIE -> HttpStatus.UNAUTHORIZED;
           case LIMITE_CONNEXION_ATTEINTE -> HttpStatus.TOO_MANY_REQUESTS;
           case TRI_INVALIDE -> HttpStatus.BAD_REQUEST;
