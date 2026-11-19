@@ -3,10 +3,11 @@ package com.fitombo.app.controller.evenement;
 import com.fitombo.app.controller.Pagination;
 import com.fitombo.app.controller.UtilisateurCourant;
 import com.fitombo.app.dto.PageResult;
+import com.fitombo.app.dto.evenement.SaisieEvenement;
 import com.fitombo.app.dto.historique.EvenementHistoriqueDto;
 import com.fitombo.app.dto.historique.FiltresEvenements;
 import com.fitombo.app.dto.pesee.CreerPeseeRequest;
-import com.fitombo.app.dto.pesee.PeseeDto;
+import com.fitombo.app.service.evenement.SaisieEvenementService;
 import com.fitombo.app.service.historique.HistoriqueService;
 import com.fitombo.app.service.pesee.PeseeService;
 import jakarta.validation.Valid;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class EvenementController {
   private final HistoriqueService historique;
   private final PeseeService pesees;
+  private final SaisieEvenementService saisies;
 
   @GetMapping("/evenements")
   public PageResult<EvenementHistoriqueDto> lister(
@@ -51,9 +53,12 @@ public class EvenementController {
 
   @PostMapping("/evenements")
   @ResponseStatus(HttpStatus.CREATED)
-  public PeseeDto enregistrer(
-      @UtilisateurCourant UUID utilisateurId, @Valid @RequestBody CreerPeseeRequest demande) {
-    return pesees.enregistrer(utilisateurId, demande);
+  public Object enregistrer(
+      @UtilisateurCourant UUID utilisateurId, @Valid @RequestBody SaisieEvenement demande) {
+    if (demande instanceof CreerPeseeRequest pesee) {
+      return pesees.enregistrer(utilisateurId, pesee);
+    }
+    return saisies.enregistrer(utilisateurId, demande);
   }
 
   private Pageable stabiliser(Pageable pageable) {

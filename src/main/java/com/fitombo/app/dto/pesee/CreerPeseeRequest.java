@@ -1,7 +1,7 @@
 package com.fitombo.app.dto.pesee;
 
+import com.fitombo.app.dto.evenement.SaisieEvenement;
 import com.fitombo.app.model.evenement.MethodePesee;
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
@@ -24,10 +24,5 @@ public record CreerPeseeRequest(
     @DecimalMin("0.1") @Digits(integer = 5, fraction = 1) BigDecimal perimetreThoraciqueCm,
     @DecimalMin("0.1") @Digits(integer = 5, fraction = 1) BigDecimal longueurCm,
     @Positive Integer nbEchantillon,
-    @Size(max = 1000) String notes) {
-
-  @AssertTrue(message = "Choisir un animal ou un lot")
-  public boolean isCibleUnique() {
-    return (animalId == null) != (lotId == null);
-  }
-}
+    @Size(max = 1000) String notes)
+    implements SaisieEvenement {}
