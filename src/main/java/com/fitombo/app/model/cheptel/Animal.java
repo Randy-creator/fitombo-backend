@@ -128,6 +128,11 @@ public class Animal extends EntiteUuid {
     this.pere = pere;
   }
 
+  public void enregistrerSortie(StatutAnimal statut, LocalDate date) {
+    this.statut = statut;
+    this.dateSortie = date;
+  }
+
   public void affecterLot(Lot nouveauLot) {
     this.lot = nouveauLot;
   }

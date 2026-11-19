@@ -1,6 +1,7 @@
 package com.fitombo.app.service.evenement;
 
 import com.fitombo.app.dto.alimentation.CreerAlimentationRequest;
+import com.fitombo.app.dto.deces.CreerDecesRequest;
 import com.fitombo.app.dto.evenement.EvenementSaisiDto;
 import com.fitombo.app.dto.evenement.SaisieEvenement;
 import com.fitombo.app.dto.production.CreerProductionRequest;
@@ -13,6 +14,7 @@ import com.fitombo.app.model.evenement.Traitement;
 import com.fitombo.app.model.evenement.TypeEvenement;
 import com.fitombo.app.model.evenement.Vaccination;
 import com.fitombo.app.repository.evenement.EvenementRepository;
+import com.fitombo.app.service.deces.DecesService;
 import com.fitombo.app.service.evenement.CiblesEvenement.Cible;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SaisieEvenementService {
   private final CiblesEvenement cibles;
+  private final DecesService deces;
   private final EvenementRepository evenements;
 
   @Transactional
@@ -93,6 +96,7 @@ public class SaisieEvenementService {
               demandeSpecialisee.dose(),
               demandeSpecialisee.dureeJours(),
               demandeSpecialisee.delaiAttenteJours());
+      case CreerDecesRequest saisie -> deces.creer(cible, saisie);
       default -> throw new IllegalArgumentException("Type d’événement inconnu");
     };
   }

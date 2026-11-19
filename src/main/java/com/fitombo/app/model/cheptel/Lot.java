@@ -59,7 +59,18 @@ public class Lot extends EntiteUuid {
   @Column(name = "deleted_at")
   private Instant deletedAt;
 
+  @Column(name = "date_cloture")
+  private LocalDate dateCloture;
+
   @Version private Long version;
+
+  public void retirerEffectif(int nombre, StatutLot statutFinal, LocalDate date) {
+    effectifActuel -= nombre;
+    if (effectifActuel == 0) {
+      statut = statutFinal;
+      dateCloture = date;
+    }
+  }
 
   public Lot(
       Exploitation exploitation,

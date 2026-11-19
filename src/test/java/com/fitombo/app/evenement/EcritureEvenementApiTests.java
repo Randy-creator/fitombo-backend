@@ -261,6 +261,21 @@ class EcritureEvenementApiTests extends ApiIntegrationTest {
                     .formatted(premier, second)));
   }
 
+  @Test
+  void constateUnDecesEtRetireLAnimalDuCheptelActif() throws Exception {
+    String details =
+        """
+        "cause":"VOL","nombre":1
+        """;
+    enregistrer(2, "DECES", details).andExpect(status().isNotFound());
+    enregistrer(1, "DECES", details).andExpect(status().isCreated());
+    assertThat(
+            jdbc.queryForObject(
+                "select statut from animal where id = ?", String.class, trouverAnimal("API-ACTIF")))
+        .isEqualTo("VOLE");
+    enregistrer(1, "DECES", details).andExpect(status().isConflict());
+  }
+
   private ResultActions annuler(int auteur, UUID id, String motif) throws Exception {
     return mvc.perform(
         patch("/evenements/{id}/annulation", id)

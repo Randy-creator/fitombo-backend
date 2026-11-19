@@ -83,6 +83,14 @@ public abstract class Evenement extends EntiteUuid {
   @Column(name = "motif_annulation")
   private String motifAnnulation;
 
+  public boolean modifieCheptel() {
+    return switch (typeEvenement) {
+      case null -> false;
+      case DECES, MOUVEMENT, MISE_BAS -> true;
+      default -> false;
+    };
+  }
+
   public boolean estValide() {
     return "VALIDE".equals(statut);
   }

@@ -28,6 +28,7 @@ public class RevisionEvenementService {
   @Transactional
   public Object corriger(UUID utilisateurId, UUID id, String motif, SaisieEvenement demande) {
     Evenement original = charger(utilisateurId, id);
+    verifierRevision(original);
     verifierCorrection(demande, original);
     var cible = cibles.reprendre(utilisateurId, original);
     original.annuler(motif.strip());
@@ -55,7 +56,15 @@ public class RevisionEvenementService {
 
   @Transactional
   public void annuler(UUID utilisateurId, UUID evenementId, String motif) {
-    charger(utilisateurId, evenementId).annuler(motif.strip());
+    Evenement evenement = charger(utilisateurId, evenementId);
+    verifierRevision(evenement);
+    evenement.annuler(motif.strip());
+  }
+
+  private void verifierRevision(Evenement evenement) {
+    if (evenement.modifieCheptel()) {
+      throw new ExceptionApplicative(CodeErreur.REVISION_AVEC_EFFETS);
+    }
   }
 
   private Evenement charger(UUID utilisateurId, UUID evenementId) {
