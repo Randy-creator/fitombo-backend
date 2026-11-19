@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fitombo.app.dto.alimentation.CreerAlimentationRequest;
 import com.fitombo.app.dto.pesee.CreerPeseeRequest;
+import com.fitombo.app.dto.production.CreerProductionRequest;
 import com.fitombo.app.dto.vaccination.CreerVaccinationRequest;
 import jakarta.validation.constraints.AssertTrue;
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @JsonSubTypes({
   @JsonSubTypes.Type(value = CreerAlimentationRequest.class, name = "ALIMENTATION"),
   @JsonSubTypes.Type(value = CreerVaccinationRequest.class, name = "VACCINATION"),
+  @JsonSubTypes.Type(value = CreerProductionRequest.class, name = "PRODUCTION"),
   @JsonSubTypes.Type(value = CreerPeseeRequest.class, name = "PESEE")
 })
 public interface SaisieEvenement {

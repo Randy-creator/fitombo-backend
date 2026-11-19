@@ -82,4 +82,29 @@ class EcritureEvenementApiTests extends ApiIntegrationTest {
             """)
         .andExpect(status().isBadRequest());
   }
+
+  @Test
+  void enregistreProductionEtControleLesDonnees() throws Exception {
+    String details =
+        """
+        "typeProduction":"LAIT","quantite":7.5,"unite":"LITRE"
+        """;
+    enregistrer(2, "PRODUCTION", details).andExpect(status().isNotFound());
+    enregistrer(1, "PRODUCTION", details)
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.type").value("PRODUCTION"));
+    assertThat(
+            jdbc.queryForObject(
+                "select count(*) from production where type_production = ? and quantite = 7.5",
+                Integer.class,
+                "LAIT"))
+        .isEqualTo(1);
+    enregistrer(
+            1,
+            "PRODUCTION",
+            """
+            "typeProduction":"LAIT","quantite":7.5,"unite":"KG"
+            """)
+        .andExpect(status().isBadRequest());
+  }
 }
