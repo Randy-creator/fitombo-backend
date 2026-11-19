@@ -15,6 +15,7 @@ class ApiExceptionHandler {
         switch (exception.code()) {
           case ELEVEUR_INTROUVABLE -> HttpStatus.NOT_FOUND;
           case EXPLOITATION_NOM_UTILISE -> HttpStatus.CONFLICT;
+          case EMPLACEMENT_NOM_UTILISE -> HttpStatus.CONFLICT;
           case IDENTIFIANTS_INVALIDES, UTILISATEUR_NON_IDENTIFIE -> HttpStatus.UNAUTHORIZED;
           case LIMITE_CONNEXION_ATTEINTE -> HttpStatus.TOO_MANY_REQUESTS;
           case TRI_INVALIDE -> HttpStatus.BAD_REQUEST;

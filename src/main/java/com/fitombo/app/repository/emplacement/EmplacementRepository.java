@@ -5,11 +5,11 @@ import com.fitombo.app.model.exploitation.Emplacement;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
 
-public interface EmplacementRepository extends Repository<Emplacement, UUID> {
+public interface EmplacementRepository extends JpaRepository<Emplacement, UUID> {
   @Query(
       """
       select new com.fitombo.app.dto.emplacement.EmplacementDto(e.id, e.nom, e.type, e.capacite)

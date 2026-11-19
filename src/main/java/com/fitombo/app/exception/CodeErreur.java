@@ -11,7 +11,8 @@ public enum CodeErreur {
   ANIMAL_INTROUVABLE("Animal introuvable"),
   ALERTE_INTROUVABLE("Alerte introuvable"),
   ELEVEUR_INTROUVABLE("Profil éleveur introuvable"),
-  EXPLOITATION_NOM_UTILISE("Ce nom d’exploitation est déjà utilisé");
+  EXPLOITATION_NOM_UTILISE("Ce nom d’exploitation est déjà utilisé"),
+  EMPLACEMENT_NOM_UTILISE("Ce nom d’emplacement est déjà utilisé");
 
   private final String message;
 
