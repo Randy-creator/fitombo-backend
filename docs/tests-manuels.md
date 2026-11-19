@@ -219,21 +219,21 @@ Consulte les écritures avec `GET /animaux/{id}/historique` ou
 `GET /evenements?lotId=<id lot>&type=PESEE`. Sur `/evenements`, renseigne exactement
 une cible. Les paramètres `du` et `au` acceptent les dates ISO.
 
-## Tester l’inscription SMS et les sessions
+## Tester l’inscription par e-mail et les sessions
 
-Dans ton `.env` local, ajoute `SMS_MODE=console` et redémarre Fitombo en profil
-`dev`. Le code de test s’affiche dans les logs de l’application. Utilise un
-numéro qui ne correspond à aucun compte de la base de test.
+Dans ton `.env` local, ajoute `EMAIL_MODE=console` et redémarre Fitombo en profil
+`dev`. Le code de test s’affiche dans les logs de l’application. Utilise une
+adresse qui ne correspond à aucun compte de la base de test.
 
-1. Envoie `POST /auth/inscription` avec `{"telephone":"+261340009001"}` et
+1. Envoie `POST /auth/inscription` avec `{"email":"tiana@example.test"}` et
    récupère le `demandeId` renvoyé par la réponse `202`.
-2. Envoie `POST /auth/verification-sms` avec ce corps et le code des logs.
+2. Envoie `POST /auth/verification-email` avec ce corps et le code des logs.
    L’inscription réussie renvoie `201`.
 
 ```json
 {
   "demandeId": "<identifiant de la demande>",
-  "telephone": "+261340009001",
+  "email": "tiana@example.test",
   "code": "<code à six chiffres>",
   "nom": "Tiana",
   "langue": "mg",
@@ -241,7 +241,7 @@ numéro qui ne correspond à aucun compte de la base de test.
 }
 ```
 
-3. Connecte-toi avec `POST /auth/connexion` et récupère `accessToken` et
+3. Connecte-toi avec `POST /auth/connexion` en envoyant les champs `email` et `motDePasse`. Récupère `accessToken` et
    `refreshToken`. Lance `GET /me` avec l’access token comme Bearer pour
    vérifier le compte.
 4. Envoie `POST /auth/refresh` avec `{"refreshToken":"<jeton courant>"}`.
@@ -252,10 +252,11 @@ numéro qui ne correspond à aucun compte de la base de test.
    cette session doit ensuite renvoyer `401`.
 
 Dans Postman, sélectionne **No Auth** sur les quatre appels publics
-(inscription, vérification SMS, connexion et refresh). Le code expire après
+(inscription, vérification e-mail, connexion et refresh). Le code expire après
 cinq minutes, le renvoi est limité à un par minute et cinq erreurs bloquent la
 demande. Pour vérifier le rejeu, réutilise un ancien refresh token après une
 rotation. L’ancien et son successeur doivent alors être refusés.
 
-Pour l’envoi réel, configurer `SMS_MODE=twilio`, `TWILIO_ACCOUNT_SID`,
-`TWILIO_AUTH_TOKEN` et `TWILIO_FROM`. Le mode console reste réservé au poste local.
+Pour l’envoi réel, vérifie une adresse expéditrice dans Brevo, crée une clé
+d’API et configure `EMAIL_MODE=brevo`, `EMAIL_FROM` et `BREVO_API_KEY` dans
+l’environnement. Render Free peut utiliser ce transport HTTPS.

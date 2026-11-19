@@ -120,10 +120,10 @@ Flyway vérifie aussi le checksum des fichiers dont seuls les commentaires ont c
 ## Sécurité et vérification
 
 - Les routes privées exigent un JWT d’accès Bearer. Les rôles globaux viennent du JWT. Vérifier l’appartenance à l’exploitation dans le service.
-- Le login par mot de passe exige un compte actif, un téléphone vérifié au format E.164 et un hash BCrypt. Renvoyer la même erreur pour les identifiants invalides et les comptes non admissibles. Protéger la réponse JWT contre la mise en cache.
+- Le login par mot de passe exige un compte actif, un identifiant vérifié et un hash BCrypt. Les nouvelles inscriptions utilisent l’e-mail. Les comptes existants conservent la connexion par téléphone vérifié. Renvoyer la même erreur pour les identifiants invalides et les comptes non admissibles. Protéger la réponse JWT contre la mise en cache.
 - Le login limite les tentatives par adresse côté application. Les réglages `app.security.login.*` définissent le nombre de tentatives, la capacité et la durée de la fenêtre. En déploiement derrière un proxy, transmettre l’adresse cliente depuis un proxy de confiance. Mutualiser la limitation côté proxy ou via un stockage partagé si plusieurs instances du backend servent les requêtes.
-- Créer le compte et son profil éleveur dans la transaction qui consomme le code d’inscription. Stocker un hash authentifié du code SMS, borner sa durée et le nombre d’essais, et sérialiser les demandes concurrentes pour un même numéro.
-- Garder le transport SMS interchangeable. Le transport console est réservé au développement local. En déploiement, fournir la configuration du prestataire par des secrets d’environnement.
+- Créer le compte et son profil éleveur dans la transaction qui consomme le code d’inscription. Stocker un hash authentifié du code e-mail, borner sa durée et le nombre d’essais, et sérialiser les demandes concurrentes pour une même adresse.
+- Garder le transport e-mail interchangeable. Le transport console est réservé au développement local. En déploiement, fournir la configuration du prestataire par des secrets d’environnement.
 - Stocker uniquement une empreinte du jeton de rafraîchissement. Renouveler le jeton à chaque usage, conserver la date d’expiration initiale et révoquer les descendants en cas de rejeu. Côté client, sérialiser les demandes de renouvellement et remplacer les deux jetons ensemble.
 - Protéger la déconnexion par le JWT d’accès et limiter la révocation à la session de son titulaire. Un JWT d’accès déjà émis reste utilisable jusqu’à son expiration.
 - Tester les calculs et règles métier à l’unité, les migrations et repositories avec PostgreSQL, et les cas d’usage HTTP avec MockMvc ou RestAssured. Couvrir les conflits et doublons pour la synchronisation.
