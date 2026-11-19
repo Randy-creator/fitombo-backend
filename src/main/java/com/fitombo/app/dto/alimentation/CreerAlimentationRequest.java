@@ -6,13 +6,14 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
 public record CreerAlimentationRequest(
-    String type,
+    @NotNull @Pattern(regexp = "ALIMENTATION") String type,
     @NotNull UUID exploitationId,
     UUID animalId,
     UUID lotId,

@@ -27,8 +27,14 @@ public class SaisieEvenementService {
 
   @Transactional
   public EvenementSaisiDto enregistrer(UUID utilisateurId, SaisieEvenement demande) {
-    Cible cible = cibles.charger(utilisateurId, demande);
+    return enregistrer(cibles.charger(utilisateurId, demande), demande, null);
+  }
+
+  public EvenementSaisiDto enregistrer(Cible cible, SaisieEvenement demande, Evenement original) {
     Evenement evenement = creer(cible, demande);
+    if (original != null) {
+      evenement.remplacer(original);
+    }
     evenements.saveAndFlush(evenement);
     return new EvenementSaisiDto(
         evenement.getId(),

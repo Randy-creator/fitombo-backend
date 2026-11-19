@@ -4,9 +4,11 @@ import com.fitombo.app.dto.pesee.CreerPeseeRequest;
 import com.fitombo.app.dto.pesee.PeseeDto;
 import com.fitombo.app.model.cheptel.Animal;
 import com.fitombo.app.model.cheptel.Lot;
+import com.fitombo.app.model.evenement.Evenement;
 import com.fitombo.app.model.evenement.Pesee;
 import com.fitombo.app.repository.pesee.PeseeRepository;
 import com.fitombo.app.service.evenement.CiblesEvenement;
+import com.fitombo.app.service.evenement.CiblesEvenement.Cible;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,10 @@ public class PeseeService {
 
   @Transactional
   public PeseeDto enregistrer(UUID utilisateurId, CreerPeseeRequest demande) {
-    var cible = cibles.charger(utilisateurId, demande);
+    return enregistrer(cibles.charger(utilisateurId, demande), demande, null);
+  }
+
+  public PeseeDto enregistrer(Cible cible, CreerPeseeRequest demande, Evenement original) {
     Animal animal = cible.animal();
     Lot lot = cible.lot();
     String espece = animal == null ? lot.getEspece().getCode() : animal.getEspece().getCode();
@@ -37,6 +42,9 @@ public class PeseeService {
             poids);
     pesee.renseignerMesures(
         demande.perimetreThoraciqueCm(), demande.longueurCm(), demande.nbEchantillon());
+    if (original != null) {
+      pesee.remplacer(original);
+    }
     pesees.saveAndFlush(pesee);
     return new PeseeDto(
         pesee.getId(),

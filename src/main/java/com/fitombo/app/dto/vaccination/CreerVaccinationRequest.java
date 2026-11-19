@@ -5,12 +5,13 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.UUID;
 
 public record CreerVaccinationRequest(
-    String type,
+    @NotNull @Pattern(regexp = "VACCINATION") String type,
     @NotNull UUID exploitationId,
     UUID animalId,
     UUID lotId,

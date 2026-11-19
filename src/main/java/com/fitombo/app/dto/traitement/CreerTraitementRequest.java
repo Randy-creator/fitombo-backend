@@ -4,6 +4,7 @@ import com.fitombo.app.dto.evenement.SaisieEvenement;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public record CreerTraitementRequest(
-    String type,
+    @NotNull @Pattern(regexp = "TRAITEMENT") String type,
     @NotNull UUID exploitationId,
     UUID animalId,
     UUID lotId,

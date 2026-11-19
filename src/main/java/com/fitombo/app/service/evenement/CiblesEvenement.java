@@ -7,6 +7,7 @@ import com.fitombo.app.model.cheptel.Animal;
 import com.fitombo.app.model.cheptel.Lot;
 import com.fitombo.app.model.cheptel.StatutAnimal;
 import com.fitombo.app.model.cheptel.StatutLot;
+import com.fitombo.app.model.evenement.Evenement;
 import com.fitombo.app.model.exploitation.Exploitation;
 import com.fitombo.app.model.utilisateur.Utilisateur;
 import com.fitombo.app.repository.animal.AnimalRepository;
@@ -31,6 +32,14 @@ public class CiblesEvenement {
     var lot = chargerLot(demande.lotId(), exploitation.getId());
     return new Cible(
         exploitation, animal, lot, entites.getReference(Utilisateur.class, utilisateurId));
+  }
+
+  Cible reprendre(UUID utilisateurId, Evenement original) {
+    return new Cible(
+        original.getExploitation(),
+        original.getAnimal(),
+        original.getLot(),
+        entites.getReference(Utilisateur.class, utilisateurId));
   }
 
   public record Cible(Exploitation exploitation, Animal animal, Lot lot, Utilisateur auteur) {}

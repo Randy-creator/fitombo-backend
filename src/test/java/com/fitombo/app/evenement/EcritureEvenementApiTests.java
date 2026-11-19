@@ -3,10 +3,12 @@ package com.fitombo.app.evenement;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fitombo.app.ApiIntegrationTest;
+import jakarta.persistence.EntityManager;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.test.web.servlet.ResultActions;
 @Sql("/sql/exploitations-api.sql")
 class EcritureEvenementApiTests extends ApiIntegrationTest {
   @Autowired private JdbcTemplate jdbc;
+  @Autowired private EntityManager entites;
 
   private ResultActions enregistrer(int utilisateur, String type, String details) throws Exception {
     UUID id =
@@ -157,6 +160,64 @@ class EcritureEvenementApiTests extends ApiIntegrationTest {
     assertThat(jdbc.queryForMap("select statut, motif_annulation from evenement where id = ?", id))
         .containsEntry("statut", "ANNULE")
         .containsEntry("motif_annulation", "Saisie en double");
+  }
+
+  @Test
+  void corrigeUneSaisieEnGardantLaTraceDeLOriginal() throws Exception {
+    enregistrer(
+            1,
+            "ALIMENTATION",
+            """
+            "aliment":"Saisie à corriger","quantiteKg":5
+            """)
+        .andExpect(status().isCreated());
+    UUID original =
+        jdbc.queryForObject(
+            "select evenement_id from alimentation where aliment = ?",
+            UUID.class,
+            "Saisie à corriger");
+    UUID animal =
+        jdbc.queryForObject("select animal_id from evenement where id = ?", UUID.class, original);
+    entites.clear();
+    jdbc.update(
+        "update animal set statut = 'VENDU', date_sortie = '2026-06-15' where id = ?", animal);
+
+    corriger(original, UUID.randomUUID()).andExpect(status().isBadRequest());
+    assertThat(
+            jdbc.queryForObject(
+                "select statut from evenement where id = ?", String.class, original))
+        .isEqualTo("VALIDE");
+
+    corriger(original, animal).andExpect(status().isCreated());
+    corriger(original, animal).andExpect(status().isConflict());
+    assertThat(
+            jdbc.queryForMap(
+                "select statut, motif_annulation from evenement where id = ?", original))
+        .containsEntry("statut", "ANNULE")
+        .containsEntry("motif_annulation", "Quantité erronée");
+    assertThat(
+            jdbc.queryForObject(
+                """
+                select count(*) from evenement join alimentation on evenement_id = id
+                where corrige_evenement_id = ? and statut = 'VALIDE' and quantite_kg = 7
+                """,
+                Integer.class,
+                original))
+        .isEqualTo(1);
+  }
+
+  private ResultActions corriger(UUID original, UUID animal) throws Exception {
+    return mvc.perform(
+        put("/evenements/{id}", original)
+            .with(utilisateur(1))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(
+                """
+                {"motif":"Quantité erronée","saisie":{"type":"ALIMENTATION",
+                 "exploitationId":"30000000-0000-4000-8000-000000000001","animalId":"%s",
+                 "dateEvenement":"2026-06-01","aliment":"Saisie corrigée","quantiteKg":7}}
+                """
+                    .formatted(animal)));
   }
 
   private ResultActions annuler(int auteur, UUID id, String motif) throws Exception {

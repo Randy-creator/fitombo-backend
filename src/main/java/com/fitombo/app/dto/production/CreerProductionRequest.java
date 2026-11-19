@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public record CreerProductionRequest(
-    String type,
+    @NotNull @Pattern(regexp = "PRODUCTION") String type,
     @NotNull UUID exploitationId,
     UUID animalId,
     UUID lotId,

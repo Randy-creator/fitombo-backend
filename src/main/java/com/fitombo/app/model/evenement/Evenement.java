@@ -83,8 +83,16 @@ public abstract class Evenement extends EntiteUuid {
   @Column(name = "motif_annulation")
   private String motifAnnulation;
 
+  public boolean estValide() {
+    return "VALIDE".equals(statut);
+  }
+
+  public void remplacer(Evenement original) {
+    corrigeEvenement = original;
+  }
+
   public void annuler(String motif) {
-    if ("VALIDE".equals(statut)) {
+    if (estValide()) {
       statut = "ANNULE";
       motifAnnulation = motif;
     }
