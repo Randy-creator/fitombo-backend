@@ -97,4 +97,41 @@ class SessionApiTests extends ApiIntegrationTest {
   private String corps(String jeton) {
     return "{\"refreshToken\":\"%s\"}".formatted(jeton);
   }
+
+  @Test
+  void deconnecteSeulementLaSessionDuTitulaire() throws Exception {
+    String premier = connexion("192.0.2.43");
+
+    mvc.perform(
+            post("/auth/deconnexion")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(corps(premier)))
+        .andExpect(status().isUnauthorized());
+
+    mvc.perform(
+            post("/auth/deconnexion")
+                .with(utilisateur(2))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(corps(premier)))
+        .andExpect(status().isNoContent());
+
+    String json =
+        renouveler(premier, "192.0.2.43")
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+    String courant = JsonPath.read(json, "$.refreshToken");
+    String acces = JsonPath.read(json, "$.accessToken");
+    for (int appel = 0; appel < 2; appel++) {
+      mvc.perform(
+              post("/auth/deconnexion")
+                  .header(HttpHeaders.AUTHORIZATION, "Bearer " + acces)
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .content(corps(courant)))
+          .andExpect(status().isNoContent());
+    }
+
+    renouveler(courant, "192.0.2.43").andExpect(status().isUnauthorized());
+  }
 }

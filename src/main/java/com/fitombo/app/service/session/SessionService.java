@@ -63,4 +63,14 @@ public class SessionService {
     sessions.remplacer(session.id(), suivant);
     return Optional.of(jetons.emettre(session.utilisateurId(), session.role(), nouveau));
   }
+
+  @Transactional
+  public void fermer(UUID utilisateurId, String jeton) {
+    String hash = JetonRafraichissement.hacher(jeton);
+    sessions.verrouiller(utilisateurId);
+    sessions
+        .chercher(hash)
+        .filter(session -> session.utilisateurId().equals(utilisateurId))
+        .ifPresent(session -> sessions.revoquerChaine(session.id()));
+  }
 }

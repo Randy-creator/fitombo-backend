@@ -1,5 +1,6 @@
 package com.fitombo.app.controller.session;
 
+import com.fitombo.app.controller.UtilisateurCourant;
 import com.fitombo.app.dto.connexion.ConnexionResponse;
 import com.fitombo.app.dto.session.SessionRequest;
 import com.fitombo.app.exception.CodeErreur;
@@ -7,11 +8,14 @@ import com.fitombo.app.exception.ExceptionApplicative;
 import com.fitombo.app.service.session.SessionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.CacheControl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,5 +31,12 @@ public class SessionController {
             .renouveler(demande.refreshToken(), requete.getRemoteAddr())
             .orElseThrow(() -> new ExceptionApplicative(CodeErreur.SESSION_INVALIDE));
     return ResponseEntity.ok().cacheControl(CacheControl.noStore()).body(resultat);
+  }
+
+  @PostMapping("/auth/deconnexion")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deconnecter(
+      @UtilisateurCourant UUID utilisateurId, @Valid @RequestBody SessionRequest demande) {
+    sessions.fermer(utilisateurId, demande.refreshToken());
   }
 }
