@@ -3,10 +3,12 @@ package com.fitombo.app.controller.lot;
 import com.fitombo.app.controller.Pagination;
 import com.fitombo.app.controller.UtilisateurCourant;
 import com.fitombo.app.dto.PageResult;
+import com.fitombo.app.dto.croissance.CourbeCroissanceDto;
 import com.fitombo.app.dto.lot.CreerLotRequest;
 import com.fitombo.app.dto.lot.LotDto;
 import com.fitombo.app.dto.lot.RattacherAnimalRequest;
 import com.fitombo.app.model.cheptel.StatutLot;
+import com.fitombo.app.service.croissance.CroissanceService;
 import com.fitombo.app.service.lot.LotService;
 import com.fitombo.app.service.lot.RattachementLotService;
 import jakarta.validation.Valid;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class LotController {
+  private final CroissanceService croissance;
   private final LotService lots;
   private final RattachementLotService rattachements;
 
@@ -67,5 +70,11 @@ public class LotController {
       @PathVariable UUID lotId,
       @PathVariable UUID animalId) {
     rattachements.retirer(utilisateurId, lotId, animalId);
+  }
+
+  @GetMapping("/lots/{id}/croissance")
+  public CourbeCroissanceDto croissance(
+      @UtilisateurCourant UUID utilisateurId, @PathVariable UUID id) {
+    return croissance.consulter(utilisateurId, id, false);
   }
 }

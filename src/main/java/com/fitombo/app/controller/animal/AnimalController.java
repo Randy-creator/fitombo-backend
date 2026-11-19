@@ -6,8 +6,10 @@ import com.fitombo.app.dto.PageResult;
 import com.fitombo.app.dto.animal.AnimalDto;
 import com.fitombo.app.dto.animal.CreerAnimalRequest;
 import com.fitombo.app.dto.animal.FiltresAnimaux;
+import com.fitombo.app.dto.croissance.CourbeCroissanceDto;
 import com.fitombo.app.service.animal.AnimalService;
 import com.fitombo.app.service.animal.CreationAnimalService;
+import com.fitombo.app.service.croissance.CroissanceService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.Set;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AnimalController {
 
+  private final CroissanceService croissance;
   private final AnimalService animaux;
   private final CreationAnimalService creation;
 
@@ -53,5 +56,11 @@ public class AnimalController {
   @GetMapping("/animaux/{id}")
   public AnimalDto consulter(@UtilisateurCourant UUID utilisateurId, @PathVariable UUID id) {
     return animaux.consulter(utilisateurId, id);
+  }
+
+  @GetMapping("/animaux/{id}/croissance")
+  public CourbeCroissanceDto croissance(
+      @UtilisateurCourant UUID utilisateurId, @PathVariable UUID id) {
+    return croissance.consulter(utilisateurId, id, true);
   }
 }

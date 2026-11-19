@@ -106,6 +106,9 @@ public abstract class Evenement extends EntiteUuid {
     }
   }
 
+  @Column(name = "created_at", insertable = false, updatable = false)
+  private Instant createdAt;
+
   @Column(name = "deleted_at")
   private Instant deletedAt;
 }
