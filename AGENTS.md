@@ -5,6 +5,7 @@ Il détaille les règles métier, les conventions du projet et les procédures l
 
 - Organiser le Java par couche, puis par fonctionnalité. Utiliser le même nom de sous-package dans les couches concernées.
 - Garder les contrôleurs centrés sur HTTP et les DTO. Placer les règles métier, les autorisations et les transactions dans les services, les requêtes dans les repositories et la conversion des erreurs HTTP dans les conseils Spring.
+- Regrouper les routes d’une même ressource ou d’un même parcours dans un contrôleur. Garder des services distincts pour les responsabilités métier différentes.
 - Utiliser `@UtilisateurCourant UUID utilisateurId` pour récupérer l’identité dans un contrôleur. Réutiliser le contrôle d’accès existant pour toute ressource rattachée à une exploitation.
 - Chercher une règle, une requête, une projection ou une fixture équivalente avant d’en ajouter une. Mutualiser les éléments qui doivent évoluer ensemble.
 - Employer des noms explicites, des méthodes à responsabilité claire et des commentaires courts. Placer les réglages modifiables dans la configuration Spring et garder les secrets hors de Git.

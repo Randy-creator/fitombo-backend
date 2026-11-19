@@ -20,6 +20,13 @@ Spring Security dans `config.security`, la gestion globale des erreurs dans
 `controller` et l’entité `Utilisateur` dans `model.utilisateur`.
 Garder une visibilité de package pour les classes et méthodes internes au sous-package.
 
+Dans une même couche, regrouper les opérations d’une ressource ou d’un parcours
+cohérent. Par exemple, `ConnexionController` expose la connexion, le
+renouvellement et la déconnexion. `AnimalController` expose la liste, la création
+et la fiche d’un animal. Les services peuvent rester distincts lorsque leurs
+cas d’usage ou leurs transactions diffèrent. Conserver les routes et contrats
+existants lors du regroupement.
+
 | Package | Responsabilité |
 | --- | --- |
 | `config` | Configuration Spring, dont la sécurité dans `config.security`. |
