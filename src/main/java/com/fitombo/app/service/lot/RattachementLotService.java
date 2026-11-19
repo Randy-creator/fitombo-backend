@@ -6,7 +6,7 @@ import com.fitombo.app.model.cheptel.Animal;
 import com.fitombo.app.model.cheptel.Lot;
 import com.fitombo.app.model.cheptel.StatutAnimal;
 import com.fitombo.app.model.cheptel.StatutLot;
-import com.fitombo.app.repository.AnimalRepository;
+import com.fitombo.app.repository.animal.AnimalRepository;
 import com.fitombo.app.repository.lot.LotRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

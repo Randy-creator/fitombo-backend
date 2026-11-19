@@ -1,16 +1,16 @@
 package com.fitombo.app.service.animal;
 
-import com.fitombo.app.dto.AnimalDto;
+import com.fitombo.app.dto.animal.AnimalDto;
 import com.fitombo.app.dto.animal.CreerAnimalRequest;
 import com.fitombo.app.exception.CodeErreur;
 import com.fitombo.app.exception.ExceptionApplicative;
 import com.fitombo.app.model.cheptel.Animal;
 import com.fitombo.app.model.cheptel.SexeAnimal;
 import com.fitombo.app.model.referentiel.ModeSuivi;
-import com.fitombo.app.repository.AnimalRepository;
 import com.fitombo.app.repository.ConflitsPersistance;
-import com.fitombo.app.service.ExploitationService;
+import com.fitombo.app.repository.animal.AnimalRepository;
 import com.fitombo.app.service.cheptel.ReferencesCheptel;
+import com.fitombo.app.service.exploitation.ExploitationService;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

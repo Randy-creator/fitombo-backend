@@ -1,4 +1,4 @@
-package com.fitombo.app.dto;
+package com.fitombo.app.dto.referentiel;
 
 import com.fitombo.app.model.referentiel.ModeSuivi;
 

@@ -5,7 +5,7 @@ import com.fitombo.app.dto.historique.EvenementHistoriqueDto;
 import com.fitombo.app.dto.historique.FiltresEvenements;
 import com.fitombo.app.exception.CodeErreur;
 import com.fitombo.app.exception.ExceptionApplicative;
-import com.fitombo.app.repository.AnimalRepository;
+import com.fitombo.app.repository.animal.AnimalRepository;
 import com.fitombo.app.repository.historique.HistoriqueRepository;
 import com.fitombo.app.repository.lot.LotRepository;
 import java.util.UUID;

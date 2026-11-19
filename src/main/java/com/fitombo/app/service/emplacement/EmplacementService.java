@@ -7,7 +7,7 @@ import com.fitombo.app.exception.CodeErreur;
 import com.fitombo.app.model.exploitation.Emplacement;
 import com.fitombo.app.repository.ConflitsPersistance;
 import com.fitombo.app.repository.emplacement.EmplacementRepository;
-import com.fitombo.app.service.ExploitationService;
+import com.fitombo.app.service.exploitation.ExploitationService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

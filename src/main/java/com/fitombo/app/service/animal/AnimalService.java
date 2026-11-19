@@ -1,11 +1,12 @@
-package com.fitombo.app.service;
+package com.fitombo.app.service.animal;
 
-import com.fitombo.app.dto.AnimalDto;
 import com.fitombo.app.dto.PageResult;
+import com.fitombo.app.dto.animal.AnimalDto;
 import com.fitombo.app.dto.animal.FiltresAnimaux;
 import com.fitombo.app.exception.CodeErreur;
 import com.fitombo.app.exception.ExceptionApplicative;
-import com.fitombo.app.repository.AnimalRepository;
+import com.fitombo.app.repository.animal.AnimalRepository;
+import com.fitombo.app.service.exploitation.ExploitationService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

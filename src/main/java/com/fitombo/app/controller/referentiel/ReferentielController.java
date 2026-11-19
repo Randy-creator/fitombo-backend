@@ -1,9 +1,10 @@
-package com.fitombo.app.controller;
+package com.fitombo.app.controller.referentiel;
 
-import com.fitombo.app.dto.EspeceDto;
+import com.fitombo.app.controller.Pagination;
 import com.fitombo.app.dto.PageResult;
-import com.fitombo.app.dto.RaceDto;
-import com.fitombo.app.service.ReferentielService;
+import com.fitombo.app.dto.referentiel.EspeceDto;
+import com.fitombo.app.dto.referentiel.RaceDto;
+import com.fitombo.app.service.referentiel.ReferentielService;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

@@ -2,11 +2,11 @@ package com.fitombo.app.controller.animal;
 
 import com.fitombo.app.controller.Pagination;
 import com.fitombo.app.controller.UtilisateurCourant;
-import com.fitombo.app.dto.AnimalDto;
 import com.fitombo.app.dto.PageResult;
+import com.fitombo.app.dto.animal.AnimalDto;
 import com.fitombo.app.dto.animal.CreerAnimalRequest;
 import com.fitombo.app.dto.animal.FiltresAnimaux;
-import com.fitombo.app.service.AnimalService;
+import com.fitombo.app.service.animal.AnimalService;
 import com.fitombo.app.service.animal.CreationAnimalService;
 import jakarta.validation.Valid;
 import java.net.URI;

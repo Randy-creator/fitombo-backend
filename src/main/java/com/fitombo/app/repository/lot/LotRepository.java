@@ -3,7 +3,7 @@ package com.fitombo.app.repository.lot;
 import com.fitombo.app.dto.lot.LotDto;
 import com.fitombo.app.model.cheptel.Lot;
 import com.fitombo.app.model.cheptel.StatutLot;
-import com.fitombo.app.repository.ExploitationRepository;
+import com.fitombo.app.repository.exploitation.ExploitationRepository;
 import jakarta.persistence.LockModeType;
 import java.util.Optional;
 import java.util.UUID;

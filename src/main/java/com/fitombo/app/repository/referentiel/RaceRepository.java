@@ -1,6 +1,6 @@
-package com.fitombo.app.repository;
+package com.fitombo.app.repository.referentiel;
 
-import com.fitombo.app.dto.RaceDto;
+import com.fitombo.app.dto.referentiel.RaceDto;
 import com.fitombo.app.model.referentiel.Race;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,7 +14,7 @@ public interface RaceRepository extends JpaRepository<Race, UUID> {
 
   @Query(
       """
-      select new com.fitombo.app.dto.RaceDto(r.id, r.nom, r.origine)
+      select new com.fitombo.app.dto.referentiel.RaceDto(r.id, r.nom, r.origine)
       from Race r
       join r.espece e
       where r.actif = true and e.actif = true and e.code = :code

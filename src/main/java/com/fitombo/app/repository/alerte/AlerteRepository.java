@@ -3,7 +3,7 @@ package com.fitombo.app.repository.alerte;
 import com.fitombo.app.dto.alerte.AlerteDto;
 import com.fitombo.app.model.alerte.Alerte;
 import com.fitombo.app.model.alerte.StatutAlerte;
-import com.fitombo.app.repository.ExploitationRepository;
+import com.fitombo.app.repository.exploitation.ExploitationRepository;
 import jakarta.persistence.LockModeType;
 import java.util.Optional;
 import java.util.UUID;

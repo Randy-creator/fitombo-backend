@@ -1,12 +1,12 @@
-package com.fitombo.app.service;
+package com.fitombo.app.service.referentiel;
 
-import com.fitombo.app.dto.EspeceDto;
 import com.fitombo.app.dto.PageResult;
-import com.fitombo.app.dto.RaceDto;
+import com.fitombo.app.dto.referentiel.EspeceDto;
+import com.fitombo.app.dto.referentiel.RaceDto;
 import com.fitombo.app.exception.CodeErreur;
 import com.fitombo.app.exception.ExceptionApplicative;
-import com.fitombo.app.repository.EspeceRepository;
-import com.fitombo.app.repository.RaceRepository;
+import com.fitombo.app.repository.referentiel.EspeceRepository;
+import com.fitombo.app.repository.referentiel.RaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

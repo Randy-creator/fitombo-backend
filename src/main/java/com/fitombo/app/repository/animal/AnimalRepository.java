@@ -1,8 +1,9 @@
-package com.fitombo.app.repository;
+package com.fitombo.app.repository.animal;
 
-import com.fitombo.app.dto.AnimalDto;
+import com.fitombo.app.dto.animal.AnimalDto;
 import com.fitombo.app.dto.animal.FiltresAnimaux;
 import com.fitombo.app.model.cheptel.Animal;
+import com.fitombo.app.repository.exploitation.ExploitationRepository;
 import jakarta.persistence.LockModeType;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,7 +18,7 @@ public interface AnimalRepository extends JpaRepository<Animal, UUID> {
 
   String PROJECTION =
       """
-      select new com.fitombo.app.dto.AnimalDto(a.id, a.identifiant, a.nom, a.espece.code,
+      select new com.fitombo.app.dto.animal.AnimalDto(a.id, a.identifiant, a.nom, a.espece.code,
                                              r.nom, a.sexe, a.dateNaissance, a.statut)
       """;
 

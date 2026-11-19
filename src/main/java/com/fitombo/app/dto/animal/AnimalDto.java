@@ -1,4 +1,4 @@
-package com.fitombo.app.dto;
+package com.fitombo.app.dto.animal;
 
 import com.fitombo.app.model.cheptel.StatutAnimal;
 import java.time.LocalDate;
