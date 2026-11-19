@@ -305,3 +305,26 @@ même type, la même exploitation et la même cible, puis modifie les valeurs
 à corriger. Le statut `201 Created` renvoie l’identifiant de la nouvelle
 saisie. Dans le journal, l’original passe à `ANNULE` et la nouvelle ligne
 référence l’original dans `corrigeEvenementId`.
+
+## Enregistrer un soin sur plusieurs animaux
+
+Envoie `POST {{baseUrl}}/evenements/groupe` avec le jeton du propriétaire et
+le corps suivant. Remplace les deux identifiants par ceux d’animaux actifs
+de la même exploitation.
+
+```json
+{
+  "animalIds": ["{{animalId}}", "{{autreAnimalId}}"],
+  "saisie": {
+    "type": "VACCINATION",
+    "exploitationId": "{{exploitationId}}",
+    "dateEvenement": "2026-06-01",
+    "vaccin": "Vaccination groupée"
+  }
+}
+```
+
+La réponse `201 Created` contient un événement par animal. Pour un traitement,
+utilise le type `TRAITEMENT` et les champs du traitement. Pour vérifier le
+contrôle de la liste, envoie deux fois le même identifiant. La réponse doit
+être `400 Bad Request` et les journaux doivent garder le même nombre de saisies.
