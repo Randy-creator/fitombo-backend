@@ -127,4 +127,8 @@ public class Animal extends EntiteUuid {
     this.mere = mere;
     this.pere = pere;
   }
+
+  public void affecterLot(Lot nouveauLot) {
+    this.lot = nouveauLot;
+  }
 }

@@ -20,7 +20,12 @@ public enum CodeErreur {
   ANIMAL_IDENTIFIANT_UTILISE("Cet identifiant est déjà utilisé"),
   ANIMAL_BOUCLE_UTILISEE("Cette boucle est déjà utilisée"),
   ESPECE_SUIVIE_EN_LOT("Cette espèce est suivie en lot"),
-  PARENT_INCOMPATIBLE("Parent indisponible pour cette espèce et ce sexe");
+  PARENT_INCOMPATIBLE("Parent indisponible pour cette espèce et ce sexe"),
+  LOT_INTROUVABLE("Lot introuvable"),
+  LOT_CLOTURE("Le lot doit être actif"),
+  ANIMAL_NON_ACTIF("L’animal doit être actif"),
+  ANIMAL_DEJA_RATTACHE("Cet animal est déjà rattaché à un autre lot"),
+  ESPECE_LOT_INCOMPATIBLE("L’animal et le lot doivent être de la même espèce");
 
   private final String message;
 

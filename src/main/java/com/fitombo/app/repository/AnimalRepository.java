@@ -3,11 +3,13 @@ package com.fitombo.app.repository;
 import com.fitombo.app.dto.AnimalDto;
 import com.fitombo.app.dto.animal.FiltresAnimaux;
 import com.fitombo.app.model.cheptel.Animal;
+import jakarta.persistence.LockModeType;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -63,4 +65,7 @@ public interface AnimalRepository extends JpaRepository<Animal, UUID> {
       @Param("utilisateurId") UUID utilisateurId,
       @Param("especeCode") String especeCode,
       @Param("sexe") String sexe);
+
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  Optional<Animal> findByIdAndExploitationIdAndDeletedAtIsNull(UUID id, UUID exploitationId);
 }
