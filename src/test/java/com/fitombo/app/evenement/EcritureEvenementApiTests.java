@@ -220,6 +220,47 @@ class EcritureEvenementApiTests extends ApiIntegrationTest {
                     .formatted(animal)));
   }
 
+  @Test
+  void enregistreUneVaccinationPourChaqueAnimalDeLaSaisieGroupee() throws Exception {
+    UUID actif = trouverAnimal("API-ACTIF");
+    UUID vendu = trouverAnimal("API-VENDU");
+
+    vaccinationGroupee(actif, actif).andExpect(status().isBadRequest());
+    vaccinationGroupee(actif, vendu).andExpect(status().isConflict());
+    assertThat(compterVaccinationsGroupees()).isZero();
+
+    jdbc.update("update animal set statut = 'ACTIF', date_sortie = null where id = ?", vendu);
+    entites.clear();
+    vaccinationGroupee(actif, vendu)
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.length()").value(2));
+    assertThat(compterVaccinationsGroupees()).isEqualTo(2);
+  }
+
+  private UUID trouverAnimal(String identifiant) {
+    return jdbc.queryForObject(
+        "select id from animal where identifiant = ?", UUID.class, identifiant);
+  }
+
+  private int compterVaccinationsGroupees() {
+    return jdbc.queryForObject(
+        "select count(*) from vaccination where vaccin = ?", Integer.class, "Vaccination groupée");
+  }
+
+  private ResultActions vaccinationGroupee(UUID premier, UUID second) throws Exception {
+    return mvc.perform(
+        post("/evenements/groupe")
+            .with(utilisateur(1))
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(
+                """
+                {"animalIds":["%s","%s"],"saisie":{"type":"VACCINATION",
+                  "exploitationId":"30000000-0000-4000-8000-000000000001",
+                  "dateEvenement":"2026-06-01","vaccin":"Vaccination groupée"}}
+                """
+                    .formatted(premier, second)));
+  }
+
   private ResultActions annuler(int auteur, UUID id, String motif) throws Exception {
     return mvc.perform(
         patch("/evenements/{id}/annulation", id)

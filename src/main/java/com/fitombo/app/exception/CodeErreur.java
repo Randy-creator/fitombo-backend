@@ -28,6 +28,8 @@ public enum CodeErreur {
   ESPECE_LOT_INCOMPATIBLE("L’animal et le lot doivent être de la même espèce"),
   EVENEMENT_DEJA_ANNULE("Cet événement est déjà annulé"),
   CORRECTION_INVALIDE("La correction doit conserver le type et la cible de l’événement"),
+  SAISIE_GROUPEE_INVALIDE(
+      "La saisie groupée exige des animaux distincts et une vaccination ou un traitement valide"),
   EVENEMENT_INTROUVABLE("Événement introuvable"),
   PESEE_INVALIDE("Mesures ou cible de la pesée invalides"),
   CODE_EMAIL_INVALIDE("Code e-mail invalide ou expiré"),

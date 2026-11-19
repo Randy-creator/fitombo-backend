@@ -26,4 +26,18 @@ public record CreerVaccinationRequest(
   public boolean isRappelValide() {
     return rappelPrevu == null || dateEvenement == null || rappelPrevu.isAfter(dateEvenement);
   }
+
+  public CreerVaccinationRequest pourAnimal(UUID id) {
+    return new CreerVaccinationRequest(
+        type,
+        exploitationId,
+        id,
+        null,
+        dateEvenement,
+        notes,
+        vaccin,
+        maladieCiblee,
+        lotVaccin,
+        rappelPrevu);
+  }
 }

@@ -30,7 +30,8 @@ class ApiExceptionHandler {
           case ANIMAL_DEJA_RATTACHE -> HttpStatus.CONFLICT;
           case ESPECE_LOT_INCOMPATIBLE -> HttpStatus.BAD_REQUEST;
           case EVENEMENT_DEJA_ANNULE -> HttpStatus.CONFLICT;
-          case PESEE_INVALIDE, CORRECTION_INVALIDE -> HttpStatus.BAD_REQUEST;
+          case PESEE_INVALIDE, CORRECTION_INVALIDE, SAISIE_GROUPEE_INVALIDE ->
+              HttpStatus.BAD_REQUEST;
           case CODE_EMAIL_INVALIDE -> HttpStatus.BAD_REQUEST;
           case EMAIL_INDISPONIBLE -> HttpStatus.SERVICE_UNAVAILABLE;
           case LIMITE_EMAIL_ATTEINTE -> HttpStatus.TOO_MANY_REQUESTS;

@@ -23,4 +23,20 @@ public record CreerTraitementRequest(
     @Size(max = 100) String dose,
     @Positive Integer dureeJours,
     @NotNull @PositiveOrZero Integer delaiAttenteJours)
-    implements SaisieEvenement {}
+    implements SaisieEvenement {
+
+  public CreerTraitementRequest pourAnimal(UUID id) {
+    return new CreerTraitementRequest(
+        type,
+        exploitationId,
+        id,
+        null,
+        dateEvenement,
+        notes,
+        produit,
+        maladie,
+        dose,
+        dureeJours,
+        delaiAttenteJours);
+  }
+}

@@ -5,15 +5,19 @@ import com.fitombo.app.controller.UtilisateurCourant;
 import com.fitombo.app.dto.PageResult;
 import com.fitombo.app.dto.evenement.AnnulerEvenementRequest;
 import com.fitombo.app.dto.evenement.CorrigerEvenementRequest;
+import com.fitombo.app.dto.evenement.EnregistrerEvenementsGroupesRequest;
+import com.fitombo.app.dto.evenement.EvenementSaisiDto;
 import com.fitombo.app.dto.evenement.SaisieEvenement;
 import com.fitombo.app.dto.historique.EvenementHistoriqueDto;
 import com.fitombo.app.dto.historique.FiltresEvenements;
 import com.fitombo.app.dto.pesee.CreerPeseeRequest;
 import com.fitombo.app.service.evenement.RevisionEvenementService;
 import com.fitombo.app.service.evenement.SaisieEvenementService;
+import com.fitombo.app.service.evenement.SaisieGroupeeService;
 import com.fitombo.app.service.historique.HistoriqueService;
 import com.fitombo.app.service.pesee.PeseeService;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +41,7 @@ public class EvenementController {
   private final HistoriqueService historique;
   private final PeseeService pesees;
   private final SaisieEvenementService saisies;
+  private final SaisieGroupeeService saisiesGroupees;
   private final RevisionEvenementService revisions;
 
   @GetMapping("/evenements")
@@ -65,6 +70,14 @@ public class EvenementController {
       return pesees.enregistrer(utilisateurId, pesee);
     }
     return saisies.enregistrer(utilisateurId, demande);
+  }
+
+  @PostMapping("/evenements/groupe")
+  @ResponseStatus(HttpStatus.CREATED)
+  public List<EvenementSaisiDto> enregistrerGroupe(
+      @UtilisateurCourant UUID utilisateurId,
+      @Valid @RequestBody EnregistrerEvenementsGroupesRequest demande) {
+    return saisiesGroupees.enregistrer(utilisateurId, demande);
   }
 
   @PutMapping("/evenements/{id}")
