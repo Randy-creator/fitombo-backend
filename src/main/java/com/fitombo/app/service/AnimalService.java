@@ -2,9 +2,9 @@ package com.fitombo.app.service;
 
 import com.fitombo.app.dto.AnimalDto;
 import com.fitombo.app.dto.PageResult;
+import com.fitombo.app.dto.animal.FiltresAnimaux;
 import com.fitombo.app.exception.CodeErreur;
 import com.fitombo.app.exception.ExceptionApplicative;
-import com.fitombo.app.model.cheptel.StatutAnimal;
 import com.fitombo.app.repository.AnimalRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +22,9 @@ public class AnimalService {
   private final AnimalRepository animaux;
 
   public PageResult<AnimalDto> lister(
-      UUID utilisateurId, UUID exploitationId, StatutAnimal statut, Pageable pageable) {
+      UUID utilisateurId, UUID exploitationId, FiltresAnimaux filtres, Pageable pageable) {
     exploitations.verifierAcces(utilisateurId, exploitationId);
-    return PageResult.from(animaux.findParExploitation(exploitationId, statut, pageable));
+    return PageResult.from(animaux.findParExploitation(exploitationId, filtres, pageable));
   }
 
   public AnimalDto consulter(UUID utilisateurId, UUID id) {
