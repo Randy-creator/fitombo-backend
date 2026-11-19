@@ -23,7 +23,8 @@ Garder une visibilité de package pour les classes et méthodes internes au sous
 Dans une même couche, regrouper les opérations d’une ressource ou d’un parcours
 cohérent. Par exemple, `ConnexionController` expose la connexion, le
 renouvellement et la déconnexion. `AnimalController` expose la liste, la création
-et la fiche d’un animal. Les services peuvent rester distincts lorsque leurs
+et la fiche d’un animal. Regrouper aussi les méthodes HTTP d’une même route,
+comme la lecture et la saisie sous `/evenements`. Les services peuvent rester distincts lorsque leurs
 cas d’usage ou leurs transactions diffèrent. Conserver les routes et contrats
 existants lors du regroupement.
 
@@ -94,9 +95,9 @@ conflits dans les traitements de synchronisation hors ligne.
 
 La connexion et le pool Hikari sont configurés dans
 [`config/persistence.properties`](../src/main/resources/config/persistence.properties).
-Spring Boot crée le `DataSource`. Les repositories accèdent à la base via JPA.
-Pour un repository Spring Data, déclarer une interface typée avec l’entité et
-son type d’identifiant.
+Spring Boot crée le `DataSource`. Les repositories Spring Data utilisent JPA
+pour les entités et projections. Garder le SQL PostgreSQL spécifique dans les
+repositories JDBC, par exemple pour les verrous transactionnels et les CTE.
 
 Créer le `.env` depuis [`.env.example`](../.env.example) si nécessaire, puis renseigner
 `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` et une clé `JWT_SECRET` aléatoire.
