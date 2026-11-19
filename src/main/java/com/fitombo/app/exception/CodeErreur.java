@@ -32,6 +32,7 @@ public enum CodeErreur {
       "La saisie groupée exige des animaux distincts et une vaccination ou un traitement valide"),
   SORTIE_CHEPTEL_INVALIDE("Quantité ou date incompatible avec la sortie du cheptel"),
   REVISION_AVEC_EFFETS("Cet événement a modifié le cheptel et nécessite une révision dédiée"),
+  REPRODUCTION_INVALIDE("Cible, ascendance ou données de reproduction incompatibles"),
   EVENEMENT_INTROUVABLE("Événement introuvable"),
   PESEE_INVALIDE("Mesures ou cible de la pesée invalides"),
   CODE_EMAIL_INVALIDE("Code e-mail invalide ou expiré"),

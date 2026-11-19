@@ -133,6 +133,10 @@ public class Animal extends EntiteUuid {
     this.dateSortie = date;
   }
 
+  public void rattacherMiseBas(MiseBas miseBas) {
+    this.miseBas = miseBas;
+  }
+
   public void affecterLot(Lot nouveauLot) {
     this.lot = nouveauLot;
   }

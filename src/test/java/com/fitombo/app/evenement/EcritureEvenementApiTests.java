@@ -23,8 +23,11 @@ class EcritureEvenementApiTests extends ApiIntegrationTest {
   @Autowired private EntityManager entites;
 
   private ResultActions enregistrer(int utilisateur, String type, String details) throws Exception {
-    UUID id =
-        jdbc.queryForObject("select id from animal where identifiant = 'API-ACTIF'", UUID.class);
+    return enregistrerPour(utilisateur, type, trouverAnimal("API-ACTIF"), details);
+  }
+
+  private ResultActions enregistrerPour(int utilisateur, String type, UUID id, String details)
+      throws Exception {
     return mvc.perform(
         post("/evenements")
             .with(utilisateur(utilisateur))
@@ -274,6 +277,74 @@ class EcritureEvenementApiTests extends ApiIntegrationTest {
                 "select statut from animal where id = ?", String.class, trouverAnimal("API-ACTIF")))
         .isEqualTo("VOLE");
     enregistrer(1, "DECES", details).andExpect(status().isConflict());
+  }
+
+  @Test
+  void suitUneGestationEtCreeUnPetitRattacheAuxParents() throws Exception {
+    UUID male = trouverAnimal("API-ACTIF");
+    UUID femelle = trouverAnimal("API-VENDU");
+    jdbc.update("update animal set statut = 'ACTIF', date_sortie = null where id = ?", femelle);
+
+    enregistrerPour(
+            1,
+            "SAILLIE",
+            male,
+            """
+            "methode":"MONTE_NATURELLE"
+            """)
+        .andExpect(status().isBadRequest());
+    enregistrerPour(
+            1,
+            "SAILLIE",
+            femelle,
+            """
+            "methode":"MONTE_NATURELLE","maleId":"%s"
+            """
+                .formatted(male))
+        .andExpect(status().isCreated());
+    UUID saillie = jdbc.queryForObject("select evenement_id from saillie", UUID.class);
+    assertThat(
+            jdbc.queryForObject(
+                """
+                select s.mise_bas_prevue = e.date_evenement + es.duree_gestation_jours
+                from saillie s join evenement e on e.id = s.evenement_id
+                join animal a on a.id = e.animal_id join espece es on es.code = a.espece_code
+                where s.evenement_id = ?
+                """,
+                Boolean.class,
+                saillie))
+        .isTrue();
+
+    enregistrerPour(
+            1,
+            "DIAGNOSTIC_GESTATION",
+            femelle,
+            """
+            "methode":"ECHOGRAPHIE","positif":true,"saillieId":"%s"
+            """
+                .formatted(saillie))
+        .andExpect(status().isCreated());
+    enregistrerPour(
+            1,
+            "MISE_BAS",
+            femelle,
+            """
+            "nesVivants":1,"mortsNes":0,"saillieId":"%s",
+            "petits":[{"identifiant":"API-NOUVEAU-NE","sexe":"FEMELLE"}]
+            """
+                .formatted(saillie))
+        .andExpect(status().isCreated());
+
+    assertThat(
+            jdbc.queryForMap(
+                """
+                select a.mere_id, a.pere_id, m.nes_vivants from animal a
+                join mise_bas m on m.evenement_id = a.mise_bas_id where a.identifiant = ?
+                """,
+                "API-NOUVEAU-NE"))
+        .containsEntry("mere_id", femelle)
+        .containsEntry("pere_id", male)
+        .containsEntry("nes_vivants", 1);
   }
 
   private ResultActions annuler(int auteur, UUID id, String motif) throws Exception {

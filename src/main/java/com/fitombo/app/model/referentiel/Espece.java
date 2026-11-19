@@ -29,4 +29,7 @@ public class Espece {
   @Column(name = "mode_suivi")
   @Enumerated(EnumType.STRING)
   private ModeSuivi modeSuivi;
+
+  @Column(name = "duree_gestation_jours")
+  private Integer dureeGestationJours;
 }

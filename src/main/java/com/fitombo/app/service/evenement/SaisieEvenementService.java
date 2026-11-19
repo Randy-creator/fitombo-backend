@@ -5,6 +5,9 @@ import com.fitombo.app.dto.deces.CreerDecesRequest;
 import com.fitombo.app.dto.evenement.EvenementSaisiDto;
 import com.fitombo.app.dto.evenement.SaisieEvenement;
 import com.fitombo.app.dto.production.CreerProductionRequest;
+import com.fitombo.app.dto.reproduction.CreerDiagnosticGestationRequest;
+import com.fitombo.app.dto.reproduction.CreerMiseBasRequest;
+import com.fitombo.app.dto.reproduction.CreerSaillieRequest;
 import com.fitombo.app.dto.traitement.CreerTraitementRequest;
 import com.fitombo.app.dto.vaccination.CreerVaccinationRequest;
 import com.fitombo.app.model.evenement.Alimentation;
@@ -16,6 +19,7 @@ import com.fitombo.app.model.evenement.Vaccination;
 import com.fitombo.app.repository.evenement.EvenementRepository;
 import com.fitombo.app.service.deces.DecesService;
 import com.fitombo.app.service.evenement.CiblesEvenement.Cible;
+import com.fitombo.app.service.reproduction.ReproductionService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SaisieEvenementService {
   private final CiblesEvenement cibles;
+  private final ReproductionService reproduction;
   private final DecesService deces;
   private final EvenementRepository evenements;
 
@@ -97,6 +102,9 @@ public class SaisieEvenementService {
               demandeSpecialisee.dureeJours(),
               demandeSpecialisee.delaiAttenteJours());
       case CreerDecesRequest saisie -> deces.creer(cible, saisie);
+      case CreerSaillieRequest saisie -> reproduction.saillie(cible, saisie);
+      case CreerDiagnosticGestationRequest saisie -> reproduction.diagnostic(cible, saisie);
+      case CreerMiseBasRequest saisie -> reproduction.miseBas(cible, saisie);
       default -> throw new IllegalArgumentException("Type d’événement inconnu");
     };
   }
