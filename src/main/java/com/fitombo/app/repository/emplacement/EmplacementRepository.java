@@ -20,5 +20,7 @@ public interface EmplacementRepository extends JpaRepository<Emplacement, UUID> 
   Page<EmplacementDto> findVisibles(
       @Param("exploitationId") UUID exploitationId, Pageable pageable);
 
+  Optional<Emplacement> findByIdAndDeletedAtIsNull(UUID id);
+
   Optional<Emplacement> findByIdAndExploitationIdAndDeletedAtIsNull(UUID id, UUID exploitationId);
 }

@@ -1,13 +1,18 @@
 package com.fitombo.app.emplacement;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fitombo.app.ApiIntegrationTest;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -51,5 +56,46 @@ class CreationEmplacementApiTests extends ApiIntegrationTest {
                 {"nom":"%s","type":"PARC","capacite":%d}
                 """
                     .formatted(nom, capacite)));
+  }
+
+  @Autowired private JdbcTemplate jdbc;
+
+  @Test
+  void modifieEtArchiveUnEmplacementPourLeProprietaire() throws Exception {
+    String base = "/exploitations/30000000-0000-4000-8000-000000000001/emplacements";
+    String demande =
+        """
+        {"nom":"Enclos à modifier","type":"ENCLOS","capacite":15}
+        """;
+    mvc.perform(
+            post(base)
+                .with(utilisateur(1))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(demande))
+        .andExpect(status().isCreated());
+    UUID id =
+        jdbc.queryForObject(
+            "select id from emplacement where nom = ?", UUID.class, "Enclos à modifier");
+    mvc.perform(
+            put("/emplacements/{id}", id)
+                .with(utilisateur(2))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(demande))
+        .andExpect(status().isNotFound());
+    mvc.perform(
+            put("/emplacements/{id}", id)
+                .with(utilisateur(1))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(demande.replace("15", "25")))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.capacite").value(25));
+    mvc.perform(delete("/emplacements/{id}", id).with(utilisateur(1)))
+        .andExpect(status().isNoContent());
+    mvc.perform(
+            put("/emplacements/{id}", id)
+                .with(utilisateur(1))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(demande))
+        .andExpect(status().isNotFound());
   }
 }
