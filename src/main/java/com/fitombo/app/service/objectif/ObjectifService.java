@@ -87,6 +87,17 @@ public class ObjectifService {
   }
 
   @Transactional(readOnly = true)
+  public long compterEnCours(UUID auteur, UUID exploitation, LocalDate date) {
+    exploitations.chargerPourGestion(auteur, exploitation);
+    return objectifs
+        .findByExploitationIdAndDeletedAtIsNull(exploitation, Pageable.unpaged())
+        .stream()
+        .filter(objectif -> !objectif.getDateCible().isBefore(date))
+        .filter(objectif -> "EN_COURS".equals(mesurer(objectif, date).statut()))
+        .count();
+  }
+
+  @Transactional(readOnly = true)
   public ObjectifDto consulter(UUID auteur, UUID id) {
     return mesurer(charger(auteur, id), LocalDate.now());
   }
