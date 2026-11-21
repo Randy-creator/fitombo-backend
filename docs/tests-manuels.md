@@ -410,3 +410,63 @@ L’estimation de date utilise les deux dernières pesées valides de jours
 différents. Pour réviser l’objectif, envoie `PUT /objectifs/{{objectifId}}`
 avec `valeurCible`, `dateCible` et éventuellement `notes`. Pour l’abandonner,
 envoie `DELETE /objectifs/{{objectifId}}`.
+
+## Consulter un lot et son journal
+
+Avec un compte qui a accès à l’exploitation, appelle `GET /lots/{{lotId}}`
+pour obtenir la fiche du lot et `GET /lots/{{lotId}}/historique` pour consulter
+son journal. La route historique accepte la pagination habituelle.
+
+## Saisir une transaction et consulter la marge
+
+Avec le jeton du propriétaire, envoie
+`POST /exploitations/{{exploitationId}}/transactions`.
+
+```json
+{
+  "categorie": "ALIMENT",
+  "montantAriary": 40000,
+  "dateTransaction": "2026-06-01",
+  "libelle": "Achat de foin"
+}
+```
+
+La catégorie détermine le sens de la transaction. Pour enregistrer une recette,
+utilise par exemple `VENTE_LAIT`. Renseigne `animalId` ou `lotId` pour affecter
+la transaction. Sans ces champs, elle concerne l’exploitation entière.
+
+Liste les écritures avec `GET /exploitations/{{exploitationId}}/transactions`.
+Consulte `GET /exploitations/{{exploitationId}}/marges?du=2026-06-01&au=2026-06-30`
+pour le total de la période. Ajoute `animalId` ou `lotId` pour restreindre le calcul.
+Le coût par kilogramme utilise les productions valides saisies en kilogrammes.
+
+## Inviter un membre et révoquer son accès
+
+Avec le jeton du propriétaire, envoie `POST /exploitations/{{exploitationId}}/membres`
+avec `{"utilisateurId":"{{compteInviteId}}","role":"VETERINAIRE"}`. Le destinataire
+doit avoir un compte actif. Récupère l’identifiant de l’invitation dans la réponse.
+
+Avec le jeton du destinataire, liste les invitations dans `GET /me/invitations`
+puis accepte avec `POST /me/invitations/{{invitationId}}/acceptation`. Le compte
+peut alors consulter les ressources ouvertes aux membres de l’exploitation.
+
+Avec le jeton du propriétaire, appelle
+`DELETE /exploitations/{{exploitationId}}/membres/{{invitationId}}`. Vérifie que
+le compte invité perd immédiatement l’accès.
+
+## Modifier ou archiver une exploitation ou un emplacement
+
+Avec le jeton du propriétaire, utilise `PUT /exploitations/{{exploitationId}}`
+ou `PUT /emplacements/{{emplacementId}}` avec les mêmes champs que pour la
+création. Vérifie ensuite la modification dans la liste correspondante.
+
+Appelle la même URL avec `DELETE` pour archiver l’élément. La réponse est
+`204 No Content`. L’élément disparaît des lectures courantes et les données
+historiques restent en base.
+
+## Consulter le tableau de bord
+
+Avec le jeton du propriétaire, envoie
+`GET /exploitations/{{exploitationId}}/tableau-de-bord?du=2026-06-01&au=2026-06-30`.
+L’effectif, les objectifs en cours et les alertes du jour sont calculés à la
+date de consultation. Les décès et la marge couvrent la période demandée.
