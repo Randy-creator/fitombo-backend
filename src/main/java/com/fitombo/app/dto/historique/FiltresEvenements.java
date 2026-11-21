@@ -23,6 +23,10 @@ public record FiltresEvenements(
     return du == null || au == null || !du.isAfter(au);
   }
 
+  public static FiltresEvenements pourLot(UUID id) {
+    return new FiltresEvenements(null, id, null, null, null);
+  }
+
   public static FiltresEvenements pourAnimal(UUID id) {
     return new FiltresEvenements(id, null, null, null, null);
   }

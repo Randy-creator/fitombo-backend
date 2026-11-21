@@ -5,7 +5,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fitombo.app.ApiIntegrationTest;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
 @Sql(
@@ -19,6 +22,22 @@ import org.springframework.test.context.jdbc.Sql;
         """)
 class LotApiTests extends ApiIntegrationTest {
   private static final String URI = "/exploitations/30000000-0000-4000-8000-000000000001/lots";
+
+  @Autowired private JdbcTemplate jdbc;
+
+  @Test
+  void consulteLaFicheEtLHistoriqueDansLePerimetreDuMembre() throws Exception {
+    UUID id = jdbc.queryForObject("select id from lot where code = 'LOT-ACTIF'", UUID.class);
+    mvc.perform(get("/lots/{id}", id).with(utilisateur(2)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.effectifActuel").value(18));
+    mvc.perform(get("/lots/{id}/historique", id).with(utilisateur(2)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.totalElements").value(0));
+    mvc.perform(get("/lots/{id}", id).with(utilisateur(4))).andExpect(status().isNotFound());
+    mvc.perform(get("/lots/{id}/historique", id).with(utilisateur(4)))
+        .andExpect(status().isNotFound());
+  }
 
   @Test
   void listeLesElementsVisiblesPourUnMembreActif() throws Exception {

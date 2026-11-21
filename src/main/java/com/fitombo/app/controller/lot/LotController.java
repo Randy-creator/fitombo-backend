@@ -4,11 +4,15 @@ import com.fitombo.app.controller.Pagination;
 import com.fitombo.app.controller.UtilisateurCourant;
 import com.fitombo.app.dto.PageResult;
 import com.fitombo.app.dto.croissance.CourbeCroissanceDto;
+import com.fitombo.app.dto.historique.EvenementHistoriqueDto;
+import com.fitombo.app.dto.historique.FiltresEvenements;
 import com.fitombo.app.dto.lot.CreerLotRequest;
+import com.fitombo.app.dto.lot.FicheLotDto;
 import com.fitombo.app.dto.lot.LotDto;
 import com.fitombo.app.dto.lot.RattacherAnimalRequest;
 import com.fitombo.app.model.cheptel.StatutLot;
 import com.fitombo.app.service.croissance.CroissanceService;
+import com.fitombo.app.service.historique.HistoriqueService;
 import com.fitombo.app.service.lot.LotService;
 import com.fitombo.app.service.lot.RattachementLotService;
 import jakarta.validation.Valid;
@@ -16,6 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LotController {
   private final CroissanceService croissance;
   private final LotService lots;
+  private final HistoriqueService historique;
   private final RattachementLotService rattachements;
 
   @GetMapping("/exploitations/{exploitationId}/lots")
@@ -70,6 +76,23 @@ public class LotController {
       @PathVariable UUID lotId,
       @PathVariable UUID animalId) {
     rattachements.retirer(utilisateurId, lotId, animalId);
+  }
+
+  @GetMapping("/lots/{id}")
+  public FicheLotDto consulter(@UtilisateurCourant UUID utilisateurId, @PathVariable UUID id) {
+    return lots.consulter(utilisateurId, id);
+  }
+
+  @GetMapping("/lots/{id}/historique")
+  public PageResult<EvenementHistoriqueDto> historique(
+      @UtilisateurCourant UUID utilisateurId,
+      @PathVariable UUID id,
+      @PageableDefault(size = 20, sort = "dateEvenement", direction = Sort.Direction.DESC)
+          Pageable page) {
+    return historique.lister(
+        utilisateurId,
+        FiltresEvenements.pourLot(id),
+        Pagination.stable(page, "id", Set.of("id", "dateEvenement")));
   }
 
   @GetMapping("/lots/{id}/croissance")

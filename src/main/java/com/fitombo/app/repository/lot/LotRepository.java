@@ -1,5 +1,6 @@
 package com.fitombo.app.repository.lot;
 
+import com.fitombo.app.dto.lot.FicheLotDto;
 import com.fitombo.app.dto.lot.LotDto;
 import com.fitombo.app.model.cheptel.Lot;
 import com.fitombo.app.model.cheptel.StatutLot;
@@ -25,6 +26,16 @@ public interface LotRepository extends JpaRepository<Lot, UUID> {
       @Param("exploitationId") UUID exploitationId,
       @Param("statut") StatutLot statut,
       Pageable pageable);
+
+  @Query(
+      """
+      select new com.fitombo.app.dto.lot.FicheLotDto(l.id, e.id, l.code, l.espece.code,
+        l.race.id, l.emplacement.id, l.dateCreation, l.dateCloture, l.effectifInitial,
+        l.effectifActuel, l.statut)
+      from Lot l join l.exploitation e where l.id = :id and l.deletedAt is null and
+      """
+          + ExploitationRepository.PERIMETRE)
+  Optional<FicheLotDto> trouverFiche(UUID id, UUID utilisateurId);
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query(

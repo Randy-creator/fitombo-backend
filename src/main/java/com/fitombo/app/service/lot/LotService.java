@@ -2,6 +2,7 @@ package com.fitombo.app.service.lot;
 
 import com.fitombo.app.dto.PageResult;
 import com.fitombo.app.dto.lot.CreerLotRequest;
+import com.fitombo.app.dto.lot.FicheLotDto;
 import com.fitombo.app.dto.lot.LotDto;
 import com.fitombo.app.exception.CodeErreur;
 import com.fitombo.app.exception.ExceptionApplicative;
@@ -32,6 +33,11 @@ public class LotService {
       UUID utilisateurId, UUID exploitationId, StatutLot statut, Pageable pageable) {
     exploitations.verifierAcces(utilisateurId, exploitationId);
     return PageResult.from(lots.findVisibles(exploitationId, statut, pageable));
+  }
+
+  public FicheLotDto consulter(UUID utilisateurId, UUID id) {
+    return lots.trouverFiche(id, utilisateurId)
+        .orElseThrow(() -> new ExceptionApplicative(CodeErreur.LOT_INTROUVABLE));
   }
 
   @Transactional(isolation = Isolation.REPEATABLE_READ)
