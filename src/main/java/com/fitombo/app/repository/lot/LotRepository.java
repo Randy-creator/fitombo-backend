@@ -46,4 +46,6 @@ public interface LotRepository extends JpaRepository<Lot, UUID> {
       """
           + ExploitationRepository.PERIMETRE)
   boolean existeVisible(@Param("id") UUID id, @Param("utilisateurId") UUID utilisateurId);
+
+  boolean existsByIdAndExploitationIdAndDeletedAtIsNull(UUID id, UUID exploitationId);
 }

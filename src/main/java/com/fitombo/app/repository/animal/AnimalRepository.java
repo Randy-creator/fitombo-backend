@@ -74,4 +74,6 @@ public interface AnimalRepository extends JpaRepository<Animal, UUID> {
 
   @Query("select count(a) > 0 from Animal a " + CIBLE_VISIBLE)
   boolean existeVisible(@Param("id") UUID id, @Param("utilisateurId") UUID utilisateurId);
+
+  boolean existsByIdAndExploitationIdAndDeletedAtIsNull(UUID id, UUID exploitationId);
 }
