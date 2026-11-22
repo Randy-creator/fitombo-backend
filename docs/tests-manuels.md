@@ -487,3 +487,7 @@ une alerte déjà enregistrée pour la même échéance. Le paramètre Spring
 Une pesée en retard crée aussi un rappel si la fréquence de pesée de
 l’espèce est renseignée. L’échéance repart de la dernière pesée valide ou,
 pour une première mesure, de la date de référence de l’animal ou du lot.
+
+Un objectif échu qui reste sous sa cible crée une alerte
+`OBJECTIF_EN_RETARD` pour le propriétaire. Une même échéance ne génère
+qu’une alerte. Le calcul reprend les mesures de la page de progression.
