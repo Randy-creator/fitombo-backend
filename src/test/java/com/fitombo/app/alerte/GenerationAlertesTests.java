@@ -61,4 +61,20 @@ class GenerationAlertesTests extends ApiIntegrationTest {
     assertThat(generation.generer(jour)).isEqualTo(1);
     assertThat(generation.generer(jour)).isZero();
   }
+
+  @Test
+  void signaleUnePeseeEnRetardUneSeuleFois() {
+    jdbc.update("update espece set frequence_pesee_jours = 10 where code = 'ZEBU'");
+    jdbc.update("update animal set date_naissance = '2026-05-01' where identifiant = 'API-ACTIF'");
+    LocalDate jour = LocalDate.of(2026, 6, 1);
+    assertThat(generation.generer(jour)).isEqualTo(1);
+    assertThat(generation.generer(jour.plusDays(1))).isZero();
+    assertThat(
+            jdbc.queryForObject(
+                """
+                select date_echeance from alerte where type = 'PESEE_EN_RETARD'
+                """,
+                LocalDate.class))
+        .isEqualTo(LocalDate.of(2026, 5, 11));
+  }
 }
