@@ -28,6 +28,17 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
+			<version>3.0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>6.0.0</version>
+		</dependency>
+
 		<!-- ===================== Web / API REST ===================== -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
