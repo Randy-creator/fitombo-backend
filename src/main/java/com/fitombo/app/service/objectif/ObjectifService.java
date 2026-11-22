@@ -150,6 +150,10 @@ public class ObjectifService {
     }
   }
 
+  public boolean estEnEchec(Objectif objectif, LocalDate jour) {
+    return "ECHEC".equals(mesurer(objectif, jour).statut());
+  }
+
   private ObjectifDto mesurer(Objectif objectif, LocalDate date) {
     UUID exploitation = objectif.getExploitation().getId();
     UUID animal = id(objectif.getAnimal());

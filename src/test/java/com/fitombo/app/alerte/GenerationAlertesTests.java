@@ -77,4 +77,25 @@ class GenerationAlertesTests extends ApiIntegrationTest {
                 LocalDate.class))
         .isEqualTo(LocalDate.of(2026, 5, 11));
   }
+
+  @Test
+  void signaleSeulementLesObjectifsEchusEtNonAtteints() {
+    jdbc.update(
+        """
+        insert into objectif(exploitation_id,type,valeur_cible,unite,date_debut,date_cible)
+        values ('30000000-0000-4000-8000-000000000001','EFFECTIF_CIBLE',5,'TETES','2026-05-01','2026-05-31'),
+               ('30000000-0000-4000-8000-000000000001','EFFECTIF_CIBLE',1,'TETES','2026-05-01','2026-05-31')
+        """);
+    var jour = LocalDate.of(2026, 6, 1);
+    assertThat(generation.generer(jour)).isEqualTo(1);
+    assertThat(generation.generer(jour)).isZero();
+    assertThat(
+            jdbc.queryForObject(
+                """
+                select o.valeur_cible::integer from alerte a join objectif o on o.id = a.objectif_id
+                where a.type = 'OBJECTIF_EN_RETARD'
+                """,
+                Integer.class))
+        .isEqualTo(5);
+  }
 }

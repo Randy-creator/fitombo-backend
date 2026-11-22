@@ -1,6 +1,7 @@
 package com.fitombo.app.repository.alerte;
 
 import java.time.LocalDate;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -127,6 +128,23 @@ public class GenerationAlertesRepository {
             on conflict on constraint uq_alerte_deduplication do nothing
             """)
         .param("jour", jour)
+        .update();
+  }
+
+  public int signalerObjectifEnRetard(UUID objectif) {
+    return jdbc.sql(
+            """
+            insert into alerte (utilisateur_id, exploitation_id, type, date_echeance, message,
+              cle_deduplication, animal_id, lot_id, objectif_id)
+            select p.utilisateur_id, x.id, 'OBJECTIF_EN_RETARD', o.date_cible,
+              'Objectif en retard : révise la date ou la valeur cible',
+              'OBJECTIF_EN_RETARD:' || o.id || ':' || o.date_cible, o.animal_id, o.lot_id, o.id
+            from objectif o join exploitation x on x.id = o.exploitation_id
+            join eleveur p on p.id = x.eleveur_id
+            where o.id = :objectif
+            on conflict on constraint uq_alerte_deduplication do nothing
+            """)
+        .param("objectif", objectif)
         .update();
   }
 }
