@@ -470,3 +470,20 @@ Avec le jeton du propriétaire, envoie
 `GET /exploitations/{{exploitationId}}/tableau-de-bord?du=2026-06-01&au=2026-06-30`.
 L’effectif, les objectifs en cours et les alertes du jour sont calculés à la
 date de consultation. Les décès et la marge couvrent la période demandée.
+
+## Consulter les protocoles et les rappels
+
+Appelle `GET /especes/{{especeCode}}/protocoles` avec ton jeton pour consulter
+les étapes du référentiel et leur indicateur `valide`. La tâche quotidienne
+crée des alertes pour les étapes des protocoles actifs et validés, en partant
+de la date de naissance de l’animal ou de la date de création du lot.
+Les protocoles de démonstration restent indicatifs jusqu’à leur validation.
+
+Consulte `GET /alertes` avec le jeton du propriétaire. Le traitement quotidien
+couvre les échéances du jour et des sept jours suivants, sans recréer
+une alerte déjà enregistrée pour la même échéance. Le paramètre Spring
+`app.alertes.cron` permet d’adapter l’heure de déclenchement.
+
+Une pesée en retard crée aussi un rappel si la fréquence de pesée de
+l’espèce est renseignée. L’échéance repart de la dernière pesée valide ou,
+pour une première mesure, de la date de référence de l’animal ou du lot.
