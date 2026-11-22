@@ -3,8 +3,10 @@ package com.fitombo.app.controller.referentiel;
 import com.fitombo.app.controller.Pagination;
 import com.fitombo.app.dto.PageResult;
 import com.fitombo.app.dto.referentiel.EspeceDto;
+import com.fitombo.app.dto.referentiel.EtapeSanitaireDto;
 import com.fitombo.app.dto.referentiel.RaceDto;
 import com.fitombo.app.service.referentiel.ReferentielService;
+import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -33,5 +35,10 @@ public class ReferentielController {
       @PathVariable String code, @PageableDefault(size = 20, sort = "nom") Pageable pageable) {
     Pageable pagination = Pagination.stable(pageable, "id", Set.of("nom", "id"));
     return referentiel.listerRaces(code, pagination);
+  }
+
+  @GetMapping("/{code}/protocoles")
+  public List<EtapeSanitaireDto> protocoles(@PathVariable String code) {
+    return referentiel.listerProtocoles(code);
   }
 }

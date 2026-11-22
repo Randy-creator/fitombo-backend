@@ -11,6 +11,10 @@ public class GenerationAlertesRepository {
   private final JdbcClient jdbc;
 
   public int generer(LocalDate jour) {
+    return rappelsEvenements(jour) + rappelsProtocoles(jour);
+  }
+
+  private int rappelsEvenements(LocalDate jour) {
     return jdbc.sql(
             """
             with echeances as (
@@ -56,6 +60,37 @@ public class GenerationAlertesRepository {
               and e.statut = 'VALIDE' and e.deleted_at is null
               and x.deleted_at is null and p.deleted_at is null and u.deleted_at is null and u.actif
               and ((a.statut = 'ACTIF' and a.deleted_at is null) or (l.statut = 'ACTIF' and l.deleted_at is null))
+            on conflict on constraint uq_alerte_deduplication do nothing
+            """)
+        .param("jour", jour)
+        .update();
+  }
+
+  private int rappelsProtocoles(LocalDate jour) {
+    return jdbc.sql(
+            """
+            with cibles as (
+              select id as animal_id, null::uuid as lot_id, date_naissance as origine,
+                espece_code, exploitation_id from animal where statut = 'ACTIF' and deleted_at is null
+              union all
+              select null::uuid, id, date_creation, espece_code, exploitation_id
+              from lot where statut = 'ACTIF' and deleted_at is null
+            )
+            insert into alerte (utilisateur_id, exploitation_id, type, date_echeance, message,
+              cle_deduplication, animal_id, lot_id)
+            select u.id, x.id,
+              case when t.type_acte = 'VACCINATION' then 'VACCIN_A_FAIRE' else 'AUTRE' end,
+              c.origine + t.age_jours, 'Étape du protocole : ' || t.produit,
+              'PROTOCOLE:' || t.id || ':' || coalesce(c.animal_id, c.lot_id)
+                || ':' || (c.origine + t.age_jours), c.animal_id, c.lot_id
+            from cibles c
+            join protocole_sanitaire p on p.espece_code = c.espece_code and p.actif and p.valide
+            join etape_protocole t on t.protocole_id = p.id
+            join exploitation x on x.id = c.exploitation_id
+            join eleveur el on el.id = x.eleveur_id
+            join utilisateur u on u.id = el.utilisateur_id
+            where c.origine + t.age_jours between :jour and cast(:jour as date) + 7
+              and x.deleted_at is null and el.deleted_at is null and u.deleted_at is null and u.actif
             on conflict on constraint uq_alerte_deduplication do nothing
             """)
         .param("jour", jour)

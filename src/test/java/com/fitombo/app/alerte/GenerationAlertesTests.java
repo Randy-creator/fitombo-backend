@@ -38,4 +38,27 @@ class GenerationAlertesTests extends ApiIntegrationTest {
                 "select type from alerte where evenement_id = ?", String.class, evenement))
         .isEqualTo("RAPPEL_VACCIN");
   }
+
+  @Test
+  void appliqueSeulementLesProtocolesValides() {
+    UUID protocole =
+        jdbc.queryForObject(
+            """
+            insert into protocole_sanitaire(espece_code, nom, valide)
+            values ('ZEBU', 'Protocole test', false) returning id
+            """,
+            UUID.class);
+    jdbc.update(
+        """
+        insert into etape_protocole(protocole_id, ordre, age_jours, type_acte, produit)
+        values (?, 1, 30, 'VACCINATION', 'Étape test')
+        """,
+        protocole);
+    jdbc.update("update animal set date_naissance = '2026-05-02' where identifiant = 'API-ACTIF'");
+    LocalDate jour = LocalDate.of(2026, 6, 1);
+    assertThat(generation.generer(jour)).isZero();
+    jdbc.update("update protocole_sanitaire set valide = true where id = ?", protocole);
+    assertThat(generation.generer(jour)).isEqualTo(1);
+    assertThat(generation.generer(jour)).isZero();
+  }
 }
