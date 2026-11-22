@@ -491,3 +491,21 @@ pour une première mesure, de la date de référence de l’animal ou du lot.
 Un objectif échu qui reste sous sa cible crée une alerte
 `OBJECTIF_EN_RETARD` pour le propriétaire. Une même échéance ne génère
 qu’une alerte. Le calcul reprend les mesures de la page de progression.
+
+## Télécharger un registre PDF ou un classeur Excel
+
+Dans Postman, crée une requête **GET** avec le jeton Bearer et choisis
+**Send and Download** pour enregistrer le fichier.
+
+| Fichier | Route | Accès |
+| --- | --- | --- |
+| Registre d’un animal | `/animaux/{{animalId}}/registre.pdf` | Comptes ayant accès à l’animal |
+| Registre d’un lot | `/lots/{{lotId}}/registre.pdf` | Comptes ayant accès au lot |
+| Événements et finances | `/exploitations/{{exploitationId}}/export.xlsx` | Propriétaire |
+
+Ajoute si besoin `?du=2026-06-01&au=2026-06-30`. Les deux bornes sont
+facultatives et inclusives. Le registre indique le statut des événements,
+y compris les annulations. Le classeur contient les feuilles **Événements**
+et **Finances**. Les dates et les montants sont triables dans Excel.
+Si une liste dépasse 10 000 lignes, l’API renvoie `422`. Réduis la période
+et télécharge les données en plusieurs fichiers.
