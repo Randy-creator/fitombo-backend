@@ -91,7 +91,7 @@ conflits dans les traitements de synchronisation hors ligne.
 - Rattacher uniquement des animaux actifs à un lot actif de la même espèce et dans la même exploitation. Protéger le rattachement et le retrait dans une transaction. Le lien individuel n’ajuste pas l’effectif du lot.
 - Vérifier qu’un événement vise une seule cible et que cette cible est accessible. Calculer les pesées au ruban avec des unités cohérentes et borner la taille de l’échantillon à l’effectif du lot.
 - Verrouiller la cible et enregistrer la sortie, le transfert ou la naissance dans la même transaction que l’événement. Garder l’origine d’un transfert dans le mouvement, car le journal suit la cible vers sa nouvelle exploitation.
-- Réserver la révision générique aux événements sans effet à rejouer sur le cheptel et sans dépendance de reproduction. Une procédure de révision dédiée doit traiter les effets existants avant de modifier le journal.
+- Réserver la révision générique aux événements sans effet à rejouer sur le cheptel et sans dépendance de reproduction. Avant de réviser une saillie, vérifier sous verrou qu’aucun diagnostic ni mise bas valide n’y est rattaché. Une procédure de révision dédiée doit traiter les effets existants avant de modifier le journal.
 - Calculer les indicateurs de croissance et la progression à la lecture. Exclure les événements annulés. Garder le prix d’un mouvement et les objectifs financiers réservés au propriétaire.
 
 ## PostgreSQL local

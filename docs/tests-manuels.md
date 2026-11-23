@@ -369,7 +369,7 @@ Pour un déplacement interne, indique `emplacementDestinationId`. Consulte
 Une vente ou un abattage effectué pendant un délai d’attente renvoie
 `delaiAttenteJusquAu` dans la réponse. Vérifie ensuite l’état de l’animal
 ou le nouvel effectif du lot. Une quantité supérieure à l’effectif doit être
-refusée. La révision générique renvoie `409` pour une saillie, une mise bas,
+refusée. La révision générique renvoie `409` pour une saillie liée à un diagnostic ou à une mise bas valide, une mise bas,
 un mouvement ou un décès, car ces saisies ont des effets ou des dépendances
 qui demandent une procédure de révision dédiée.
 
