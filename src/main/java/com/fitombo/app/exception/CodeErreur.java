@@ -40,6 +40,7 @@ public enum CodeErreur {
   MEMBRE_DEJA_INVITE("Ce compte a déjà une invitation ou un accès"),
   INVITATION_INVALIDE("Le rôle ou le compte choisi ne permet pas cette invitation"),
   EXPORT_TROP_VOLUMINEUX("L’export dépasse 10 000 lignes. Réduis la période."),
+  PARTAGE_INDISPONIBLE("Partage ou statistiques indisponibles"),
   EVENEMENT_INTROUVABLE("Événement introuvable"),
   PESEE_INVALIDE("Mesures ou cible de la pesée invalides"),
   CODE_EMAIL_INVALIDE("Code e-mail invalide ou expiré"),

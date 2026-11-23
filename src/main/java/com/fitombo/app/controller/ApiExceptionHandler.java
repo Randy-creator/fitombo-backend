@@ -13,6 +13,7 @@ class ApiExceptionHandler {
   ProblemDetail traiter(ExceptionApplicative exception) {
     HttpStatus statut =
         switch (exception.code()) {
+          case PARTAGE_INDISPONIBLE -> HttpStatus.NOT_FOUND;
           case EXPORT_TROP_VOLUMINEUX -> HttpStatus.UNPROCESSABLE_CONTENT;
           case MEMBRE_INTROUVABLE -> HttpStatus.NOT_FOUND;
           case MEMBRE_DEJA_INVITE -> HttpStatus.CONFLICT;
