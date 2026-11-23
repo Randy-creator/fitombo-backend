@@ -41,6 +41,8 @@ public enum CodeErreur {
   INVITATION_INVALIDE("Le rôle ou le compte choisi ne permet pas cette invitation"),
   EXPORT_TROP_VOLUMINEUX("L’export dépasse 10 000 lignes. Réduis la période."),
   PARTAGE_INDISPONIBLE("Partage ou statistiques indisponibles"),
+  OPERATION_SYNC_INVALIDE("Les champs de la saisie sont invalides"),
+  OPERATION_SYNC_REUTILISEE("Cet identifiant d’opération a déjà servi à une autre saisie"),
   EVENEMENT_INTROUVABLE("Événement introuvable"),
   PESEE_INVALIDE("Mesures ou cible de la pesée invalides"),
   CODE_EMAIL_INVALIDE("Code e-mail invalide ou expiré"),
