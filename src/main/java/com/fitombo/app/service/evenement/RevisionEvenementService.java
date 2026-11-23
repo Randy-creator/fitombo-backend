@@ -6,7 +6,10 @@ import com.fitombo.app.exception.CodeErreur;
 import com.fitombo.app.exception.ExceptionApplicative;
 import com.fitombo.app.model.commun.EntiteUuid;
 import com.fitombo.app.model.evenement.Evenement;
+import com.fitombo.app.model.evenement.Saillie;
+import com.fitombo.app.repository.alerte.AlerteRepository;
 import com.fitombo.app.repository.evenement.EvenementRepository;
+import com.fitombo.app.repository.reproduction.ReproductionRepository;
 import com.fitombo.app.service.exploitation.ExploitationService;
 import com.fitombo.app.service.pesee.PeseeService;
 import java.util.Objects;
@@ -24,6 +27,8 @@ public class RevisionEvenementService {
   private final CiblesEvenement cibles;
   private final PeseeService pesees;
   private final SaisieEvenementService saisies;
+  private final ReproductionRepository reproduction;
+  private final AlerteRepository alertes;
 
   @Transactional
   public Object corriger(UUID utilisateurId, UUID id, String motif, SaisieEvenement demande) {
@@ -31,7 +36,7 @@ public class RevisionEvenementService {
     verifierRevision(original);
     verifierCorrection(demande, original);
     var cible = cibles.reprendre(utilisateurId, original);
-    original.annuler(motif.strip());
+    annulerEtIgnorerAlertes(original, motif);
     if (demande instanceof CreerPeseeRequest pesee) {
       return pesees.enregistrer(cible, pesee, original);
     }
@@ -58,13 +63,21 @@ public class RevisionEvenementService {
   public void annuler(UUID utilisateurId, UUID evenementId, String motif) {
     Evenement evenement = charger(utilisateurId, evenementId);
     verifierRevision(evenement);
-    evenement.annuler(motif.strip());
+    annulerEtIgnorerAlertes(evenement, motif);
   }
 
   private void verifierRevision(Evenement evenement) {
-    if (evenement.modifieCheptel()) {
+    if (evenement.modifieCheptel()
+        || (evenement instanceof Saillie
+            && (reproduction.miseBasExistante(evenement.getId())
+                || reproduction.diagnosticExistant(evenement.getId())))) {
       throw new ExceptionApplicative(CodeErreur.REVISION_AVEC_EFFETS);
     }
+  }
+
+  private void annulerEtIgnorerAlertes(Evenement evenement, String motif) {
+    evenement.annuler(motif.strip());
+    alertes.ignorerLieesAEvenement(evenement.getId());
   }
 
   private Evenement charger(UUID utilisateurId, UUID evenementId) {

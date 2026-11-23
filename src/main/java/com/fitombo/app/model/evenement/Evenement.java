@@ -86,7 +86,7 @@ public abstract class Evenement extends EntiteUuid {
   public boolean modifieCheptel() {
     return switch (typeEvenement) {
       case null -> false;
-      case DECES, MOUVEMENT, SAILLIE, MISE_BAS -> true;
+      case DECES, MOUVEMENT, MISE_BAS -> true;
       default -> false;
     };
   }

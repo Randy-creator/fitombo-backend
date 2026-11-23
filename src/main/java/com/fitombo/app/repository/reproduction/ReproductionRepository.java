@@ -15,4 +15,11 @@ public interface ReproductionRepository extends Repository<Saillie, UUID> {
       where m.saillie.id = :saillieId and m.statut = 'VALIDE' and m.deletedAt is null
       """)
   boolean miseBasExistante(UUID saillieId);
+
+  @Query(
+      """
+      select count(d) > 0 from DiagnosticGestation d
+      where d.saillie.id = :saillieId and d.statut = 'VALIDE' and d.deletedAt is null
+      """)
+  boolean diagnosticExistant(UUID saillieId);
 }

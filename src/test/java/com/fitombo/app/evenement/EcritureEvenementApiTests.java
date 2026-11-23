@@ -449,6 +449,39 @@ class EcritureEvenementApiTests extends ApiIntegrationTest {
         .andExpect(jsonPath("$.details.exploitationDestinationId").value(destination.toString()));
   }
 
+  @Test
+  void annuleUneSaillieIsoleeMaisPreserveUneSaillieLieeAUnDiagnostic() throws Exception {
+    UUID femelle = trouverAnimal("API-VENDU");
+    jdbc.update("update animal set statut = 'ACTIF', date_sortie = null where id = ?", femelle);
+    String saillie =
+        """
+        "methode":"MONTE_NATURELLE","maleExterne":"Mâle test"
+        """;
+    enregistrerPour(1, "SAILLIE", femelle, saillie).andExpect(status().isCreated());
+    UUID initiale = jdbc.queryForObject("select evenement_id from saillie", UUID.class);
+    entites.clear();
+    annuler(1, initiale, "Erreur de saisie").andExpect(status().isNoContent());
+    enregistrerPour(1, "SAILLIE", femelle, saillie).andExpect(status().isCreated());
+    UUID suivie =
+        jdbc.queryForObject(
+            """
+            select s.evenement_id from saillie s join evenement e on e.id = s.evenement_id
+            where e.statut = 'VALIDE'
+            """,
+            UUID.class);
+    enregistrerPour(
+            1,
+            "DIAGNOSTIC_GESTATION",
+            femelle,
+            """
+            "methode":"ECHOGRAPHIE","positif":true,"saillieId":"%s"
+            """
+                .formatted(suivie))
+        .andExpect(status().isCreated());
+    entites.clear();
+    annuler(1, suivie, "Erreur de saisie").andExpect(status().isConflict());
+  }
+
   private ResultActions annuler(int auteur, UUID id, String motif) throws Exception {
     return mvc.perform(
         patch("/evenements/{id}/annulation", id)

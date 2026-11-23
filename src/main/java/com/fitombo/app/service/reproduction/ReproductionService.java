@@ -16,6 +16,7 @@ import com.fitombo.app.model.evenement.MiseBas;
 import com.fitombo.app.model.evenement.Saillie;
 import com.fitombo.app.model.referentiel.Espece;
 import com.fitombo.app.repository.animal.AnimalRepository;
+import com.fitombo.app.repository.evenement.EvenementRepository;
 import com.fitombo.app.repository.reproduction.ReproductionRepository;
 import com.fitombo.app.service.evenement.CiblesEvenement.Cible;
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Component;
 public class ReproductionService {
   private final AnimalRepository animaux;
   private final ReproductionRepository reproduction;
+  private final EvenementRepository evenements;
 
   public Saillie saillie(Cible cible, CreerSaillieRequest demande) {
     Espece espece = verifierCible(cible, demande.dateEvenement());
@@ -167,8 +169,9 @@ public class ReproductionService {
     if (id == null) {
       return null;
     }
-    return reproduction
-        .findByIdAndStatutAndDeletedAtIsNull(id, "VALIDE")
+    return evenements
+        .verrouiller(id)
+        .flatMap(verrou -> reproduction.findByIdAndStatutAndDeletedAtIsNull(verrou, "VALIDE"))
         .filter(s ->
             s.getExploitation().getId().equals(demande.exploitationId())
                 && Objects.equals(

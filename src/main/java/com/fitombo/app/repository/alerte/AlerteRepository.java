@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
@@ -40,4 +41,14 @@ public interface AlerteRepository extends Repository<Alerte, UUID> {
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query("select a from Alerte a where a.id = :id and " + PERIMETRE)
   Optional<Alerte> findAModifier(@Param("id") UUID id, @Param("utilisateurId") UUID utilisateurId);
+
+  @Modifying
+  @Query(
+      value =
+          """
+          update alerte set statut = 'IGNOREE'
+          where evenement_id = :evenement and statut in ('EN_ATTENTE', 'ENVOYEE', 'VUE')
+          """,
+      nativeQuery = true)
+  void ignorerLieesAEvenement(UUID evenement);
 }
