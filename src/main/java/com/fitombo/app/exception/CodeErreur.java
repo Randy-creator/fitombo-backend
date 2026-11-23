@@ -1,0 +1,63 @@
+package com.fitombo.app.exception;
+
+public enum CodeErreur {
+  IDENTIFIANTS_INVALIDES("Identifiants invalides"),
+  LIMITE_CONNEXION_ATTEINTE("Trop de tentatives de connexion"),
+  UTILISATEUR_NON_IDENTIFIE("Identifiant utilisateur absent ou invalide"),
+  TRI_INVALIDE("Champ de tri non autorisé"),
+  ESPECE_INTROUVABLE("Espèce introuvable"),
+  EXPLOITATION_INTROUVABLE("Exploitation introuvable"),
+  PROFIL_INTROUVABLE("Profil introuvable"),
+  ANIMAL_INTROUVABLE("Animal introuvable"),
+  ALERTE_INTROUVABLE("Alerte introuvable"),
+  ELEVEUR_INTROUVABLE("Profil éleveur introuvable"),
+  EXPLOITATION_NOM_UTILISE("Ce nom d’exploitation est déjà utilisé"),
+  EMPLACEMENT_NOM_UTILISE("Ce nom d’emplacement est déjà utilisé"),
+  LOT_CODE_UTILISE("Ce code de lot est déjà utilisé"),
+  ESPECE_NON_SUIVIE_EN_LOT("Cette espèce est suivie individuellement"),
+  RACE_INCOMPATIBLE("Race indisponible pour cette espèce"),
+  EMPLACEMENT_INTROUVABLE("Emplacement introuvable dans cette exploitation"),
+  ANIMAL_IDENTIFIANT_UTILISE("Cet identifiant est déjà utilisé"),
+  ANIMAL_BOUCLE_UTILISEE("Cette boucle est déjà utilisée"),
+  ESPECE_SUIVIE_EN_LOT("Cette espèce est suivie en lot"),
+  PARENT_INCOMPATIBLE("Parent indisponible pour cette espèce et ce sexe"),
+  LOT_INTROUVABLE("Lot introuvable"),
+  LOT_CLOTURE("Le lot doit être actif"),
+  ANIMAL_NON_ACTIF("L’animal doit être actif"),
+  ANIMAL_DEJA_RATTACHE("Cet animal est déjà rattaché à un autre lot"),
+  ESPECE_LOT_INCOMPATIBLE("L’animal et le lot doivent être de la même espèce"),
+  EVENEMENT_DEJA_ANNULE("Cet événement est déjà annulé"),
+  CORRECTION_INVALIDE("La correction doit conserver le type et la cible de l’événement"),
+  SAISIE_GROUPEE_INVALIDE(
+      "La saisie groupée exige des animaux distincts et une vaccination ou un traitement valide"),
+  SORTIE_CHEPTEL_INVALIDE("Quantité ou date incompatible avec la sortie du cheptel"),
+  REVISION_AVEC_EFFETS("Cet événement a modifié le cheptel et nécessite une révision dédiée"),
+  REPRODUCTION_INVALIDE("Cible, ascendance ou données de reproduction incompatibles"),
+  MOUVEMENT_INVALIDE("Les données sont incompatibles avec ce mouvement"),
+  OBJECTIF_INVALIDE("L’unité, la cible, la valeur ou les dates de cet objectif sont incompatibles"),
+  OBJECTIF_INTROUVABLE("Objectif introuvable"),
+  MEMBRE_INTROUVABLE("Membre ou invitation introuvable"),
+  MEMBRE_DEJA_INVITE("Ce compte a déjà une invitation ou un accès"),
+  INVITATION_INVALIDE("Le rôle ou le compte choisi ne permet pas cette invitation"),
+  EXPORT_TROP_VOLUMINEUX("L’export dépasse 10 000 lignes. Réduis la période."),
+  PARTAGE_INDISPONIBLE("Partage ou statistiques indisponibles"),
+  OPERATION_SYNC_INVALIDE("Les champs de la saisie sont invalides"),
+  OPERATION_SYNC_REUTILISEE("Cet identifiant d’opération a déjà servi à une autre saisie"),
+  EVENEMENT_INTROUVABLE("Événement introuvable"),
+  PESEE_INVALIDE("Mesures ou cible de la pesée invalides"),
+  CODE_EMAIL_INVALIDE("Code e-mail invalide ou expiré"),
+  EMAIL_INDISPONIBLE("Envoi e-mail indisponible"),
+  LIMITE_EMAIL_ATTEINTE("Réessaie avant de demander un autre code"),
+  COMPTE_DEJA_INSCRIT("Un compte existe déjà pour ces coordonnées"),
+  SESSION_INVALIDE("Session invalide ou expirée");
+
+  private final String message;
+
+  CodeErreur(String message) {
+    this.message = message;
+  }
+
+  public String message() {
+    return message;
+  }
+}

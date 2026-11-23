@@ -50,3 +50,7 @@ tmp/
 # ===== Données locales =====
 pgdata/
 uploads/
+
+/docs/*
+!/docs/developpement.md
+!/docs/tests-manuels.md

@@ -23,13 +23,22 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Versions hors gestion Spring Boot -->
-		<mapstruct.version>1.6.3</mapstruct.version>
-		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
 		<springdoc.version>3.1.1</springdoc.version>
 		<jacoco.version>0.8.13</jacoco.version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
+			<version>3.0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>6.0.0</version>
+		</dependency>
+
 		<!-- ===================== Web / API REST ===================== -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -86,13 +95,6 @@
 			<version>${springdoc.version}</version>
 		</dependency>
 
-		<!-- ===================== Mapping entité <-> DTO ===================== -->
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-			<version>${mapstruct.version}</version>
-		</dependency>
-
 		<!-- ===================== Confort de développement ===================== -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -112,50 +114,20 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- ===================== Tests ===================== -->
+		<!-- Tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator-test</artifactId>
+			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-flyway-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security-oauth2-resource-server-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webmvc-test</artifactId>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-testcontainers</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>testcontainers-junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -167,6 +139,44 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>com.diffplug.spotless</groupId>
+				<artifactId>spotless-maven-plugin</artifactId>
+				<version>3.11.0</version>
+				<configuration>
+					<java>
+						<googleJavaFormat>
+							<version>2.0.0</version>
+							<cleanup>false</cleanup>
+							<formatJavadoc>false</formatJavadoc>
+							<reflowLongStrings>false</reflowLongStrings>
+						</googleJavaFormat>
+					</java>
+					<formats>
+						<format>
+							<includes>
+								<include>.github/workflows/*.yml</include>
+								<include>compose.yaml</include>
+								<include>.env.example</include>
+								<include>pom.xml</include>
+								<include>src/main/resources/**/*.properties</include>
+							</includes>
+							<trimTrailingWhitespace/>
+							<endWithNewline/>
+						</format>
+					</formats>
+				</configuration>
+				<executions>
+					<execution>
+						<id>check-formatting</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- Packaging exécutable Spring Boot (Lombok exclu du jar final) -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -181,7 +191,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- Compilation : Lombok + MapStruct (l'ordre des processeurs est important) -->
+			<!-- Processeur d’annotations Lombok -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -192,21 +202,7 @@
 							<artifactId>lombok</artifactId>
 							<version>${lombok.version}</version>
 						</path>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok-mapstruct-binding</artifactId>
-							<version>${lombok-mapstruct-binding.version}</version>
-						</path>
-						<path>
-							<groupId>org.mapstruct</groupId>
-							<artifactId>mapstruct-processor</artifactId>
-							<version>${mapstruct.version}</version>
-						</path>
 					</annotationProcessorPaths>
-					<compilerArgs>
-						<arg>-Amapstruct.defaultComponentModel=spring</arg>
-						<arg>-Amapstruct.unmappedTargetPolicy=WARN</arg>
-					</compilerArgs>
 				</configuration>
 			</plugin>
 
