@@ -175,3 +175,34 @@ la compilation et les tests. Appliquer les corrections en local avec
    exécution, ouvrir **Settings → Rules → Rulesets**, créer une règle pour la
    branche cible, exiger une pull request et sélectionner le contrôle **Maven verify**
    dans **Require status checks to pass**.
+
+## Mettre Fitombo en ligne
+
+1. Provisionner une application Java 25 et une base PostgreSQL. Si le déploiement
+   part de GitHub, donner à l’hébergeur accès au dépôt et sélectionner la branche
+   à déployer. Utiliser `./mvnw --batch-mode verify` pour construire le JAR.
+2. Configurer `SPRING_PROFILES_ACTIVE=prod`, `DB_URL`, `DB_USERNAME` et
+   `DB_PASSWORD` dans l’hébergeur. Utiliser la chaîne JDBC et le réglage TLS
+   fournis par le serveur PostgreSQL. Le compte de migration doit pouvoir
+   appliquer Flyway. Activer les sauvegardes et tester une restauration.
+3. Générer `JWT_SECRET` avec `openssl rand -base64 48`. Conserver cette valeur
+   dans le gestionnaire de secrets du déploiement. Renseigner
+   `CORS_ALLOWED_ORIGINS` avec les origines exactes du frontend.
+4. Activer HTTPS sur l’adresse publique de l’API. Si un domaine personnalisé
+   est utilisé, créer les entrées DNS demandées par l’hébergeur.
+5. Pour l’inscription par e-mail, vérifier un expéditeur dans Brevo et ajouter
+   `EMAIL_MODE=brevo`, `EMAIL_FROM` et `BREVO_API_KEY` dans les secrets.
+   Garder le mode console pour le développement local.
+6. Tester `GET /actuator/health`, l’inscription par e-mail puis la connexion
+   et un export avec un compte de test.
+
+Les rappels dans Fitombo, les exports et les statistiques agrégées utilisent
+le backend et PostgreSQL. Le push et les SMS demanderaient un prestataire et
+une intégration dédiée. Pour les protocoles sanitaires, obtenir la validation
+du vétérinaire avant d’activer un calendrier de référence.
+
+Pour ouvrir des statistiques à une organisation, un administrateur de la base
+doit créer l’organisation et rattacher son compte représentant avec le rôle
+`ORGANISATION` et `utilisateur.organisation_id`. Rattacher les profils éleveurs
+via `eleveur.organisation_id`. Chaque éleveur donne ensuite son accord dans
+l’application. Un changement d’affiliation révoque cet accord.

@@ -509,3 +509,51 @@ y compris les annulations. Le classeur contient les feuilles **Événements**
 et **Finances**. Les dates et les montants sont triables dans Excel.
 Si une liste dépasse 10 000 lignes, l’API renvoie `422`. Réduis la période
 et télécharge les données en plusieurs fichiers.
+
+## Donner ou révoquer le partage avec une organisation
+
+Avec le jeton de l’éleveur, consulte `GET /me/partage-organisation`. Si une
+organisation est rattachée au profil, envoie à `PUT /me/partage-organisation`
+le corps `{"partage":true,"organisationId":"{{organisationId}}"}`.
+Pour révoquer le partage, envoie `{"partage":false}`.
+
+Avec le jeton du représentant de l’organisation, consulte
+`GET /organisation/statistiques`. Par défaut, l’API fournit des totaux à
+partir de trois éleveurs consentants. Elle renvoie `404` en dessous de ce
+seuil ou si le compte est hors périmètre.
+
+## Synchroniser le journal d’événements
+
+Pour envoyer des saisies conservées hors ligne, appelle `POST /sync/push`
+avec le jeton du propriétaire et au plus 50 opérations. Chaque opération a
+un UUID créé et conservé par le client dans `operationId` et le corps
+habituel de `POST /evenements` dans `saisie`.
+
+```json
+{
+  "operations": [{
+    "operationId": "65f24876-cce1-4b52-81f0-818280788a1e",
+    "saisie": {
+      "type": "PESEE",
+      "exploitationId": "{{exploitationId}}",
+      "animalId": "{{animalId}}",
+      "dateEvenement": "2026-06-01",
+      "methode": "BALANCE",
+      "poidsKg": 120
+    }
+  }]
+}
+```
+
+Renvoie le même corps pour vérifier que la première réponse `ACCEPTE` est
+suivie de `DOUBLON` avec le même `evenementId`. Un identifiant déjà accepté
+avec un corps différent renvoie `REJETE`.
+
+Pour lire le journal synchronisé, appelle
+`GET /sync/pull?exploitationId={{exploitationId}}` avec un compte autorisé.
+Conserve le `curseur` par exploitation après avoir appliqué la page localement.
+Au prochain appel, renvoie ses valeurs dans les paramètres `transaction`
+et `sequence`. Continue tant que `suite` vaut `true`. Applique chaque
+résultat par identifiant d’événement et retire l’entrée locale si `retire`
+vaut `true`. L’état renvoyé résume l’entrée du journal. La file d’attente
+et la base locale du téléphone restent à intégrer au client.
