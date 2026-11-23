@@ -178,23 +178,49 @@ la compilation et les tests. Appliquer les corrections en local avec
 
 ## Mettre Fitombo en ligne
 
-1. Provisionner une application Java 25 et une base PostgreSQL. Si le déploiement
-   part de GitHub, donner à l’hébergeur accès au dépôt et sélectionner la branche
-   à déployer. Utiliser `./mvnw --batch-mode verify` pour construire le JAR.
-2. Configurer `SPRING_PROFILES_ACTIVE=prod`, `DB_URL`, `DB_USERNAME` et
-   `DB_PASSWORD` dans l’hébergeur. Utiliser la chaîne JDBC et le réglage TLS
-   fournis par le serveur PostgreSQL. Le compte de migration doit pouvoir
-   appliquer Flyway. Activer les sauvegardes et tester une restauration.
-3. Générer `JWT_SECRET` avec `openssl rand -base64 48`. Conserver cette valeur
-   dans le gestionnaire de secrets du déploiement. Renseigner
-   `CORS_ALLOWED_ORIGINS` avec les origines exactes du frontend.
-4. Activer HTTPS sur l’adresse publique de l’API. Si un domaine personnalisé
-   est utilisé, créer les entrées DNS demandées par l’hébergeur.
-5. Pour l’inscription par e-mail, vérifier un expéditeur dans Brevo et ajouter
-   `EMAIL_MODE=brevo`, `EMAIL_FROM` et `BREVO_API_KEY` dans les secrets.
-   Garder le mode console pour le développement local.
-6. Tester `GET /actuator/health`, l’inscription par e-mail puis la connexion
-   et un export avec un compte de test.
+La branche `prod` contient le [Dockerfile](../Dockerfile) et le
+[Blueprint Render](../render.yaml). Le Blueprint crée un seul backend gratuit
+à Francfort et utilise une base PostgreSQL externe. Le déploiement automatique
+du service est désactivé pour choisir les versions qui partent en production.
+Pour appliquer les changements du Blueprint uniquement à la demande, régler aussi
+**Auto Sync → No** dans les paramètres du Blueprint.
+
+1. Exécuter `git push -u origin prod`. Dans Render, choisir **New → Blueprint**,
+   autoriser le dépôt GitHub et sélectionner `prod` avec le fichier
+   `render.yaml`.
+2. Dans Neon, ouvrir **Connect** sur la branche de production et désactiver
+   **Connection pooling**. Renseigner les variables demandées par Render.
+
+   | Variable | Valeur |
+   | --- | --- |
+   | `DB_URL` | `jdbc:postgresql://HOTE_NEON:5432/NOM_BASE?sslmode=verify-full&sslfactory=org.postgresql.ssl.DefaultJavaSSLFactory&channelBinding=require` |
+   | `DB_USERNAME` | Le rôle indiqué dans Neon, par exemple `fitombo_owner`. |
+   | `DB_PASSWORD` | Le mot de passe affiché par Neon. |
+   | `CORS_ALLOWED_ORIGINS` | L’origine exacte du frontend. Pour un test avec Postman, utiliser `http://localhost:5173`. |
+
+   Le Blueprint configure le profil `prod`, le pool JDBC, la mémoire Java et
+   la génération du secret JWT. Conserver ce secret entre les déploiements.
+   L’URL JDBC tient sur une ligne. Garder les identifiants dans Render.
+3. Cliquer sur **Deploy Blueprint**. Utiliser l’adresse HTTPS Render fournie.
+   Ouvrir `/ping` pour vérifier la réponse `pong`, puis `/actuator/health`
+   pour vérifier que la base répond. Consulter les logs du premier démarrage
+   pour confirmer l’application des migrations Flyway. Conserver des
+   sauvegardes PostgreSQL et tester leur restauration.
+4. Pour l’inscription par e-mail, vérifier un expéditeur dans Brevo et ajouter
+   `EMAIL_MODE=brevo`, `EMAIL_FROM` et `BREVO_API_KEY` dans les variables du
+   service. Laisser l’envoi désactivé pour le premier démarrage si nécessaire.
+5. Pour une mise à jour, pousser `prod` et choisir **Manual Deploy → Deploy
+   latest commit** dans Render après le passage de la CI.
+
+Si un Web Service Render existe déjà, le relier à `prod` dans ses paramètres
+et utiliser le runtime **Docker**, l’offre **Free** et `/ping` pour le contrôle
+de santé. Renseigner manuellement les variables du Blueprint, y compris
+`SPRING_PROFILES_ACTIVE=prod` et un `JWT_SECRET` généré avec
+`openssl rand -base64 48` si le service n’en possède pas encore.
+
+Pour rester à 0 €, garder les offres Free sur Render et Neon et laisser Render
+sans moyen de paiement. Les requêtes peuvent attendre le réveil du backend et
+la tâche quotidienne de rappel peut manquer son créneau pendant la veille.
 
 Les rappels dans Fitombo, les exports et les statistiques agrégées utilisent
 le backend et PostgreSQL. Le push et les SMS demanderaient un prestataire et
